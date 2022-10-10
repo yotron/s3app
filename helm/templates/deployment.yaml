@@ -1,0 +1,118 @@
+{{- $name := include "s3app.name" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels:
+    app: {{ $name }}
+    chart: {{ include "s3app.chart" . }}
+    release: {{ .Release.Name }}
+{{- with .Values.k8s.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  replicas: {{ .Values.app.server.replicas }}
+  selector:
+    matchLabels:
+      app: {{ $name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $name }}
+        chart: {{ include "s3app.chart" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+{{- if .Values.nginxproxy.enabled }}
+        - name: {{ $name }}-proxy
+          image: "{{- .Values.nginxproxy.image }}:{{- .Values.nginxproxy.tag }}"
+          imagePullPolicy: {{ .Values.app.server.imagePullPolicy }}
+          ports:
+            - name: proxy-port
+              containerPort: {{ .Values.listenerPort }}
+              hostPort: {{ .Values.listenerPort }}
+          volumeMounts:
+            - name: {{ $name }}-proxy
+              mountPath: /etc/nginx/conf.d
+{{- if .Values.tls.enabled }}
+            - name: {{ $name }}-secret
+              mountPath: "/etc/certs"
+              readOnly: true
+{{- end }}
+          startupProbe:
+            httpGet:
+              path: /s3app/liveness
+              port: proxy-port
+{{- if .Values.tls.enabled }}
+              scheme: HTTPS
+{{- end }}
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /proxy/liveness
+              port: proxy-port
+{{- if .Values.tls.enabled }}
+              scheme: HTTPS
+{{- end }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /s3app/readiness
+              port: proxy-port
+{{- if .Values.tls.enabled }}
+              scheme: HTTPS
+{{- end }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+{{- end }}
+        - name: {{ $name }}-app
+          image: "{{- .Values.app.server.image }}:{{- .Values.app.server.tag }}"
+          imagePullPolicy: {{ .Values.app.server.imagePullPolicy }}
+          ports:
+            - name: app-port
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: {{ $name }}-envvar
+          volumeMounts:
+            - name: {{ $name }}-dotenv
+              mountPath: /usr/src/app/webapp/.env
+              subPath: .env
+          startupProbe:
+            httpGet:
+              path: /s3app/liveness
+              port: app-port
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /s3app/liveness
+              port: app-port
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /s3app/readiness
+              port: app-port
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: {{ $name }}-dotenv
+          configMap:
+            name: {{ $name }}-dotenv
+            items:
+            - key: .env
+              path: .env
+{{- if .Values.nginxproxy.enabled }}
+        - name: {{ $name }}-proxy
+          configMap:
+            name: {{ $name }}-proxy
+{{- end }}
+{{- if .Values.tls.enabled }}
+        - name: {{ $name }}-secret
+          secret:
+            secretName: {{ .Values.tls.secretName }}
+{{- end }}

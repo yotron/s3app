@@ -1,0 +1,58 @@
+{{- if .Values.nginxproxy.enabled }}
+{{- $name := include "s3app.name" . -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $name }}-proxy
+  labels:
+    app: {{ $name }}
+    chart: {{ include "s3app.chart" . }}
+    release: {{ .Release.Name }}
+{{- with .Values.k8s.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+data:
+{{- with .Values.nginxproxy }}
+  nginx.conf: |
+    error_log /dev/stdout {{ $.Values.logLevel }};
+    server { # simple reverse-proxy
+      {{- if $.Values.tls.enabled }}
+      listen       {{ $.Values.listenerPort }} ssl;
+      ssl_certificate     /etc/certs/tls.crt;
+      ssl_certificate_key /etc/certs/tls.key;
+      {{- else }}
+      listen       {{ $.Values.listenerPort }};
+      {{- end }}
+      server_name  {{ join " " $.Values.hostnames }};
+      access_log   /dev/stdout  main;
+
+      # serve static files
+      location /proxy/liveness  {
+        return 200;
+      }
+
+      # pass requests for dynamic content to rails/turbogears/zope, et al
+      location / {
+        proxy_pass      http://127.0.0.1:8080;
+      }
+    }
+
+  proxy.conf: |
+    proxy_redirect          off;
+    proxy_set_header        Host            $host;
+    proxy_set_header        X-Real-IP       $remote_addr;
+    proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+    {{- if $.Values.tls.enabled }}
+    proxy_set_header        X-Forwarded-Proto https;
+    {{- else }}
+    proxy_set_header        X-Forwarded-Proto http;
+    {{- end }}
+    client_max_body_size    {{ .clientMaxBodySize }};
+    client_body_buffer_size 128k;
+    proxy_connect_timeout   {{ .clientConnectTimeout }};
+    proxy_send_timeout      {{ .proxySendTimeout }};
+    proxy_read_timeout      {{ .proxyReadTimeout }};
+    proxy_buffers           32 4k;
+{{- end }}
+{{- end }}

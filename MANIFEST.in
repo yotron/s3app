@@ -1,0 +1,3 @@
+graft s3app/static
+graft s3app/templates
+global-exclude *.pyc

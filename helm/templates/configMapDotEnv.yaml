@@ -1,0 +1,39 @@
+{{- $name := include "s3app.name" . -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $name }}-dotenv
+  labels:
+    app: {{ $name }}
+    chart: {{ include "s3app.chart" . }}
+    release: {{ .Release.Name }}
+{{- with .Values.k8s.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+data:
+  .env: |
+    APP_ICON={{ .Values.customize.icon }}
+    APP_TITLE={{ .Values.customize.title }}
+    DB_TYPE= {{ .Values.app.database }}
+    LOG_LEVEL= {{ .Values.logLevel }}
+    SECRET_KEY= ascascascasc
+    {{- if eq .Values.app.database.type "postgres"  }}
+    {{- with .Values.app.database }}
+    {{- if .pgExternal }}
+    PG_DB_HOST= {{ .pgDbHost }}
+    PG_DB_PORT= {{ .pgDbPort }}
+    PG_DB_NAME= {{ .pdDbName }}
+    PG_DB_USER_NAME= {{ .pgDbUserPw }}
+    PG_DB_USER_PW= {{ .pgDbUserPw }}
+    {{- end }}
+    {{- end }}
+    {{ else }}
+    {{- with .Values.postgresql }}
+    PG_DB_HOST= {{ $.Values.postgresql.fullnameOverride }}.{{ $.Release.Namespace }}.svc
+    PG_DB_PORT= {{ .primary.service.ports.postgresql }}
+    PG_DB_NAME= {{ .auth.database }}
+    PG_DB_USER_NAME= {{ .auth.username }}
+    PG_DB_USER_PW= {{ .auth.password }}
+    {{- end }}
+    {{- end }}

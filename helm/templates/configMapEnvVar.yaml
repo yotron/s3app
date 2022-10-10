@@ -1,0 +1,17 @@
+{{- $name := include "s3app.name" . -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $name }}-envvar
+  labels:
+    app: {{ $name }}
+    chart: {{ include "s3app.chart" . }}
+    release: {{ .Release.Name }}
+{{- with .Values.k8s.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+data:
+  WAITRESS_THREADS: "{{ .Values.app.server.threadsPerReplica }}"
+  LiSTENER_IP: 0.0.0.0
+  LiSTENER_PORT: '8080'

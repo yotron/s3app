@@ -1,0 +1,66 @@
+{% extends "appbuilder/base.html" %}
+{% block head_css %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css"/>
+{% endblock %}
+{% block head_js %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/explorer.js') }}"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
+<script>
+setting={{ s3WebData | safe}}
+contents={{ contents | safe}}
+commonPrefixes={{ commonPrefixes | safe}}
+accessList={{ accessList | safe}}
+bucketList={{ currentBucketList | safe}}
+</script>
+{% endblock %}
+{% block tail_js %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/events.js') }}"></script>
+{% endblock %}
+{% block content %}
+<div class="panel panel-primary ">
+    <div class="panel-heading">
+        <h4 class="panel-title">S3 Content</h4>
+    </div>
+
+
+<div class="selector">
+  Select Access: <input id="s3access" class="s3access inline" />
+  Select Bucket:  <input id="s3bucket" class="s3bucket inline" />
+  <div class="inline">
+    <div class="loader"></div>
+  </div>
+</div>
+<div>
+    <div>
+        <ul class="breadcrumb">
+            <li><a href="/s3/">S3</a></li>
+            {% set ns = namespace(prefixes="") %}
+            {% for prefixFolder in currentPrefixesList %}
+                {% set ns.prefixes = ns.prefixes + prefixFolder + " " %}
+            <li><a href="{{ ns.prefixes | urlencode }}">{{ prefixFolder }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="table-responsive">
+        <table id="example" class="display" style="width:100%">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Size</th>
+                <th>LastModified</th>
+            </tr>
+            </thead>
+            <tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Size</th>
+                <th>LastModified</th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+{% endblock %}

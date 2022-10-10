@@ -1,0 +1,31 @@
+{{- $name := include "s3app.name" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+  labels:
+    app: {{ $name }}
+    chart: {{ include "s3app.chart" . }}
+    release: {{ .Release.Name }}
+  annotations:
+{{- with .Values.k8s.service.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- with .Values.k8s.annotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.k8s.service.type }}
+  selector:
+    app: {{ $name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.listenerPort }}
+      targetPort: {{ template "s3app.container.listener.port" $ }}
+{{- if eq .Values.k8s.service.type "NoidePort" }}
+      nodePort: {{ .Values.k8s.service.nodePort }}
+{{- end }}
+{{- if .Values.k8s.service.externaIPs }}
+  externalIPs:
+{{ toYaml .Values.k8s.service.externaIPs | indent 4 }}
+{{- end }}

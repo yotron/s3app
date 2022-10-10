@@ -1,0 +1,19 @@
+apiVersion: v2
+appVersion: 1.0.0
+name: yotron-s3-manager
+description: This is a HELM chart for yotorn-s3-manager.
+home: https://www.yotron.de
+icon: https://www.yotron.de/img/logo-yotron.png
+dependencies:
+  - name: postgresql
+    version: "11.9.5"
+    repository: https://charts.bitnami.com/bitnami
+  - name: k8s-secrets
+    version: 1.0.0
+    repository: http://helm.yotron.de
+    alias: certs
+    condition: certs
+maintainers:
+- email: joern.kleinbub@yotron.de
+  name: joern.kleinbub
+version: 1.0.0

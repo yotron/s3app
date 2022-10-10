@@ -1,0 +1,13 @@
+/.idea/
+/venv/
+*.iml
+*.egg-info
+/Vagrantfile
+/.vagrant/
+/s3app.egg-info/
+/app.db
+/dist/
+/build/
+*.log
+/helm/charts/
+/helm/Chart.lock

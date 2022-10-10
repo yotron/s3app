@@ -1,0 +1,126 @@
+/* Style the list */
+ul.breadcrumb {
+    padding: 10px 16px;
+    list-style: none;
+    background-color: #eee;
+}
+
+/* Display list items side by side */
+ul.breadcrumb li {
+    display: inline;
+    font-size: 18px;
+}
+
+/* Add a slash symbol (/) before/behind each list item */
+ul.breadcrumb li+li:before {
+    padding: 8px;
+    color: black;
+    content: "/\00a0";
+}
+
+/* Add a color to all links inside the list */
+ul.breadcrumb li a {
+    color: #0275d8;
+    text-decoration: none;
+}
+
+/* Add a color on mouse-over */
+ul.breadcrumb li a:hover {
+    color: #01447e;
+    text-decoration: underline;
+}
+
+.loader {
+    display: None;
+    border: 4px solid #f3f3f3; /* Light grey */
+    border-top: 4px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.selector {
+    height: 60px;
+    padding-top: 10px;
+    margin: auto;
+    text-align: left;
+}
+
+.inline {
+    display: inline-block;
+    padding-right: 20px;
+    vertical-align: middle;
+}
+
+.s3access, .s3bucket {
+    min-width: 150px;
+}
+.dropdown-menu .title {
+    color: #00000073;
+    font-size: 14px;
+    line-height: 1.5715;
+    padding: 8px 16px 0;
+    transition: all .3s;
+}
+
+.dropdown-menu > li > a {
+    display: block;
+    padding: 6px 8px 6px 24px;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.42857143;
+    color: #23527c;
+    white-space: nowrap;
+}
+
+.navbar-header > .app_icon {
+    padding: 5px 5px;
+}
+
+.navbar-header > .app_name {
+    margin: auto;
+    padding-right: 10px;
+    padding-left: 25px;
+}
+
+.panel {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 0;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+.panel-primary > .panel-heading {
+    background-color: transparent;
+}
+
+.panel-primary > .panel-heading {
+    color: #337ab7;;
+    border-color: #337ab7;
+}
+
+.panel-default > .panel-heading {
+    background-color: transparent;
+}
+
+.table-bordered > tbody > tr > td, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > td, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > thead > tr > th {
+    border-left: 0px;
+    border-right: 0px;
+
+}
+
+.table-bordered {
+    border: 0;
+}
