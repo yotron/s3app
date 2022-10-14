@@ -1,41 +1,42 @@
+# Documentation under https://artifacthub.io/packages/helm/yotron-helm-charts/s3app
+
 logLevel: info
-hostnames:
-- s3app.k8s.yotron.de
+#hostnames:
+#- s3app.k8s.yotron.de
 listenerPort: 80
+# listenerIPs:
+#   - 192.168.56.249
 k8s:
   identifier: s3app
-  annotations:
-    yotron.de/hallo: test
-    yotron.de/hallo2: ascasc
+#  annotations:
+#    yotron.de/created_by: s3app
   service:
-    annotations:
-      metallb.universe.tf/loadBalancerIPs: 192.168.56.249
-    type: LoadBalancer
+#    annotations:
+#      metallb.universe.tf/loadBalancerIPs: 192.168.56.249
+    type: NodePort
     nodePort: 31005
-    externaIPs:
-      - 192.168.56.249
 customize:
   title: S3App by YOTRON
-  icon: https://flask.palletsprojects.com/en/2.2.x/_images/flask-logo.png
+  icon: https://www.yotron.de/img/yotron_logo.svg
 app:
-  secretKey: mysecretkey
+  secretKey: changeMySecret
   server:
     replicas: 1
-    threadsPerReplica: 1
+    threadsPerReplica: 4
     image: yotronpublic/s3app
-    imagePullPolicy: Always #IfNotPresent
-    tag: 1.0.0
+    imagePullPolicy: IfNotPresent
+    tag: latest
   database:
-    type: postgres # sqlite
-    pgExternal: true
-    pgDbHost: postgres.mydb.net
+    type: sqlite # postgres
+    pgInternal: false
+    pgDbHost: "postgres.mydb.net"
     pgDbPort: 5432
     pdDbName: s3app
     pgDbUserName: s3app
     pgDbUserPw: s3app
 tls:
   enabled: false
-  secretName: mytlskeyandcrtsecret
+  secretName: "" # defaultselfsigned to use the demonstration
 nginxproxy:
   enabled: true
   image: nginx
@@ -46,49 +47,47 @@ nginxproxy:
   proxyReadTimeout: 90
 ingress:
   enabled: false
-  annotations:
-    yotron.de/hallo: test
-    yotron.de/hallo2: ascasc
+# annotations:
+#   konghq.com/plugins: request-id
   ingressClassName: nginx
   path: "/"
   pathType: Prefix
-certs:
-  tls:
-    mytlskeyandcrtsecret:
-      crt: |
-        -----BEGIN CERTIFICATE-----
-        MIICZjCCAc+gAwIBAgIUG2+orvKiYu/7TYAFLfkKbmXRJmowDQYJKoZIhvcNAQEL
-        BQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM
-        GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMjEwMDQxMzUzMTVaFw0yMzEw
-        MDQxMzUzMTVaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw
-        HwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwgZ8wDQYJKoZIhvcNAQEB
-        BQADgY0AMIGJAoGBANur0nceFdnLs8AUrv10lB28Lo/lwp2bkzMKk85kcSRhcm16
-        7AFrU9/2t8WutCWx2IIsdFRIvByRijXrIf35m8MRmX4ppZt1WWopw0xc9JYi8d6r
-        elYw798uVJWoYBziZJ9u318iMi3uMOaG6eUOm9R9H/jizezmqMrq6Q4cjHARAgMB
-        AAGjUzBRMB0GA1UdDgQWBBRia0YsxE/+EnR1I3LPXiTJr8SB6zAfBgNVHSMEGDAW
-        gBRia0YsxE/+EnR1I3LPXiTJr8SB6zAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3
-        DQEBCwUAA4GBAKAlpPZ6yXQvTR63hvSC88K6zrSaylSGYJdqbWfNF9GXya0AThsV
-        srEcbV51QyRE/2ChAfn76qK5bd3fWNJhJdtX2xjoalGeXSWa5YPk5LRuUSvHnfpE
-        +r30srGgvfBFz40wAInok5XWETYSa0AWdketqf8NqKU0X6plMJvI4RRl
-        -----END CERTIFICATE-----
-
-      key: |
-        -----BEGIN PRIVATE KEY-----
-        MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBANur0nceFdnLs8AU
-        rv10lB28Lo/lwp2bkzMKk85kcSRhcm167AFrU9/2t8WutCWx2IIsdFRIvByRijXr
-        If35m8MRmX4ppZt1WWopw0xc9JYi8d6relYw798uVJWoYBziZJ9u318iMi3uMOaG
-        6eUOm9R9H/jizezmqMrq6Q4cjHARAgMBAAECgYAxDfaq6QoCH+4dB8FoEh99YGeZ
-        dLp4DaTachM9tMpbUHOIJToMuxX43pR9TZ0nCccKkrjLlY6EZq/RiJeHqrTwedMi
-        L7GdLPmw/fb0yGJeETOIbkqJlFMW1DlxVSQFC73JSGlkLr/UPJm3kIOzswDo8CJO
-        2B8KkJeTLE/AH4adPQJBAO/iEhzn7ly8BfXDKK4w6kCyZdROLb2uVE/dlptarzIg
-        Z95vOxE638RI6A1fGIuyDXEK+bGTGDC1QmYf+bqFJvsCQQDqbhyRVg3Rfk7i0dL8
-        E+aYdHH4F/TnHQiHPk+7kiIktzqEVs026BrQ9Whi/WwZUaXdDvHkANT2SRwac3by
-        gIdjAkBJ484Gf16JzBTd5dZzCXguo4UAR3CJe9hWnX/VrLJIc3jrKEH+ha8FjBuG
-        euNZrGe9iU7uZsvNvReN042d6YPfAkBjfD8bXk2W7edEUo8a8scVQ7Vp96Cyw5tu
-        6X6ktytOMYPfzYZhGrbmnn6iI7HQPNoKqeD1RXUa34PRpdaAqxLJAkEAvmxHrBsK
-        a3oTgnBCiGeAmR8dwKVX84ip3Rk6SJvYpn88WgJAEOj6GILOqQ1mdPR+d0IKmM1Q
-        WRW/Vwy5AOVFTA==
-        -----END PRIVATE KEY-----
+#certs:
+#  tls:
+#    defaultselfsigned:
+#      crt: |
+#        -----BEGIN CERTIFICATE-----
+#        MIICZjCCAc+gAwIBAgIUG2+orvKiYu/7TYAFLfkKbmXRJmowDQYJKoZIhvcNAQEL
+#        BQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM
+#        GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMjEwMDQxMzUzMTVaFw0yMzEw
+#        MDQxMzUzMTVaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw
+#        HwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwgZ8wDQYJKoZIhvcNAQEB
+#        BQADgY0AMIGJAoGBANur0nceFdnLs8AUrv10lB28Lo/lwp2bkzMKk85kcSRhcm16
+#        7AFrU9/2t8WutCWx2IIsdFRIvByRijXrIf35m8MRmX4ppZt1WWopw0xc9JYi8d6r
+#        elYw798uVJWoYBziZJ9u318iMi3uMOaG6eUOm9R9H/jizezmqMrq6Q4cjHARAgMB
+#        AAGjUzBRMB0GA1UdDgQWBBRia0YsxE/+EnR1I3LPXiTJr8SB6zAfBgNVHSMEGDAW
+#        gBRia0YsxE/+EnR1I3LPXiTJr8SB6zAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3
+#        DQEBCwUAA4GBAKAlpPZ6yXQvTR63hvSC88K6zrSaylSGYJdqbWfNF9GXya0AThsV
+#        srEcbV51QyRE/2ChAfn76qK5bd3fWNJhJdtX2xjoalGeXSWa5YPk5LRuUSvHnfpE
+#        +r30srGgvfBFz40wAInok5XWETYSa0AWdketqf8NqKU0X6plMJvI4RRl
+#        -----END CERTIFICATE-----
+#      key: |
+#        -----BEGIN PRIVATE KEY-----
+#        MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBANur0nceFdnLs8AU
+#        rv10lB28Lo/lwp2bkzMKk85kcSRhcm167AFrU9/2t8WutCWx2IIsdFRIvByRijXr
+#        If35m8MRmX4ppZt1WWopw0xc9JYi8d6relYw798uVJWoYBziZJ9u318iMi3uMOaG
+#        6eUOm9R9H/jizezmqMrq6Q4cjHARAgMBAAECgYAxDfaq6QoCH+4dB8FoEh99YGeZ
+#        dLp4DaTachM9tMpbUHOIJToMuxX43pR9TZ0nCccKkrjLlY6EZq/RiJeHqrTwedMi
+#        L7GdLPmw/fb0yGJeETOIbkqJlFMW1DlxVSQFC73JSGlkLr/UPJm3kIOzswDo8CJO
+#        2B8KkJeTLE/AH4adPQJBAO/iEhzn7ly8BfXDKK4w6kCyZdROLb2uVE/dlptarzIg
+#        Z95vOxE638RI6A1fGIuyDXEK+bGTGDC1QmYf+bqFJvsCQQDqbhyRVg3Rfk7i0dL8
+#        E+aYdHH4F/TnHQiHPk+7kiIktzqEVs026BrQ9Whi/WwZUaXdDvHkANT2SRwac3by
+#        gIdjAkBJ484Gf16JzBTd5dZzCXguo4UAR3CJe9hWnX/VrLJIc3jrKEH+ha8FjBuG
+#        euNZrGe9iU7uZsvNvReN042d6YPfAkBjfD8bXk2W7edEUo8a8scVQ7Vp96Cyw5tu
+#        6X6ktytOMYPfzYZhGrbmnn6iI7HQPNoKqeD1RXUa34PRpdaAqxLJAkEAvmxHrBsK
+#        a3oTgnBCiGeAmR8dwKVX84ip3Rk6SJvYpn88WgJAEOj6GILOqQ1mdPR+d0IKmM1Q
+#        WRW/Vwy5AOVFTA==
+#        -----END PRIVATE KEY-----
 postgresql:
   fullnameOverride: postgresql
   architecture: standalone
@@ -99,10 +98,10 @@ postgresql:
     database: s3app
   primary:
     service:
-      type: NodePort
-      nodePorts:
-        postgresql: 31000
+      type: ClusterIP
+#     nodePorts:
+#       postgresql: 31000
     persistence:
-      enabled: true
-      storageClass: managed-nfs-storage
+      enabled: false
+#     storageClass: managed-nfs-storage
       size: 1Gi
