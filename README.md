@@ -1,8 +1,8 @@
 [![yotron](https://www.yotron.de/img/logo-yotron.png)](http://www.yotron.de)
 
 [YOTRON](http://www.yotron.de) is a consultancy company which is focused on DevOps, Cloudmanagement and
-Data Management with NOSQL and SQL-Databases. Visit us on [ www.yotron.de ](http://www.yotron.de)
-ement with NOSQL and SQL-Databases. Visit us on www.yotron.de
+Data Management with NOSQL and SQL-Databases. Visit us on [www.yotron.de](http://www.yotron.de)
+ement with NOSQL and SQL-Databases.
 
 # S3App
 S3 (Simple Storage Solution) is a file storage services which is part of Cloud solutions. It is known for its
@@ -14,12 +14,19 @@ the visualizing and the management of the content of S3 buckets with an S3 provi
 
 For further information and the manual, please see [s3app/manual](http://192.168.56.105:1313/s3app/manual/)
 
-# URLS
-[ GitHub ](http://www.yotron.de)
+## S3App URLs
+The project contains code, build packages, container ... . Below an overview:
 
-[ YOTRON ](http://www.yotron.de)
+| Type                  | Provider                        | URL                                                           |
+|-----------------------|---------------------------------|---------------------------------------------------------------|
+| S3App Manual          | yotron.de                       | http://www.yotron.de/s3app/                                   |
+| Container             | hub.docker.com                  | https://hub.docker.com/repository/docker/yotronpublic/s3app   | 
+| Python Package (PyPi) | pypi.org                        | https://pypi.org/project/s3app/                               |  
+| HELM package          | artifacthub.io / helm.yotron.de | https://artifacthub.io/packages/helm/yotron-helm-charts/s3app |
+| Code/Contribution     | github.com                      | https://github.com/yotron/s3app/                              |
+| Problems/Feedback     | github.com                      | https://github.com/yotron/s3app/issues                        |
 
-# Installation
+## Installation
 We provide two installation methods. A native installation on any OS which supports Python3 and a installation in Kubernetes via HELM.
 Per default, S3App runs on a sqlite database. Sqlite is recommended only for testing and on a standalone installation.
 
@@ -30,8 +37,8 @@ The S3App has no TLS-termination ("https"). We recommend to use a Reverse Proxy 
 The HELM project of S3App for Kubernetes contains all needed and recommended components. You can optionally install a NGINX Reverse Proxy and a PostgreSQL database with the project,
 but you can also use separated applications.
 
-## Native
-### Prerequisites
+### Native
+#### Prerequisites
 - [Python3](https://www.python.org/)
 - [Python-pip](https://pip.pypa.io) for dependency installation
 - recommended: python3-venv to create a virtual environment for Python3
@@ -62,7 +69,7 @@ For CentOS:
 `sudo yum install python3 python3-pip python3-venv`
 
 
-### Installation
+#### Installation
 There are a lot of variants how to start a Python web project. We use a Python virtual environment for setting up S3App on a virtual environment. 
 Depend on your environment and knowledge in Python the process can be different.
 
@@ -120,14 +127,14 @@ Depend on your environment and knowledge in Python the process can be different.
 
    ![Dashboard of S3App](s3appdashboard.png)
 
-## HELM
-You find the installation instructions for Kubernetes [here](TODO)
+### HELM
+You find the installation instructions for Kubernetes [here](https://artifacthub.io/packages/helm/yotron-helm-charts/s3app)
 
-# Manual
-The manual for S3App you find [here](TODO)
+## Manual
+The manual for S3App you find [here](http://www.yotron.de/s3app/)
 
-# Configuration
-## The dotenv file and `S3APP_DOTENV_FILE` variable
+## Configuration
+### The dotenv file and `S3APP_CONF_FILE` variable
 You can customize S3App with a few parameters. All parameters must be set in a config file with a name like `.s3app`. The name can be chosen freely and you can put the file in a folder of your choice but 
 the file must be reachable by the S3App App. 
 
@@ -154,12 +161,12 @@ S3APP_PG_DB_USER_NAME = "s3app"
 S3APP_SECRET_KEY = "thisIsMyHiddenSecretKey"
 ```
 
-## The parameter of the config file
+### The parameter of the config file
 | name                  | example                              | description                                                                                                            | possible values                    | default |
 |-----------------------|--------------------------------------|------------------------------------------------------------------------------------------------------------------------|------------------------------------|---------|
 | S3APP_APP_NAME        | My Fancy S3 App                      | The name of your S3App. It is display in the head of your application.                                                 |                                    |         |
 | S3APP_APP_ICON        | https://myserver.com/my_own_logo.svg | The icon of your S3App as a html link. It is display in the head of your application.                                  |                                    |         |
-| S3APP_LOG_LEVEL       | info                                 | LogLevel for the Logging. Can be                                                                                       | fatal, error, warning, info, debug | info    |
+| S3APP_LOG_LEVEL       | info                                 | LogLevel for the Logging.                                                                                              | fatal, error, warning, info, debug | info    |
 | S3APP_LOG_FILE        | /var/log/s3app.log                   | When set logs are written to the mentioned file. If not set it is written to console (stdout).                         |                                    | not set |
 | S3APP_DB_TYPE         | postgresql                           | Type of database to use. Can be a SQLite or a PostgreSQL Database                                                      | sqlite, postgres                   | sqlite  |
 | S3APP_PG_DB_HOST      | k8s-1.mydatabse.com                  | Only if db-type postgres: Host name of the PostresSQL server.                                                          |                                    |         |
@@ -169,7 +176,7 @@ S3APP_SECRET_KEY = "thisIsMyHiddenSecretKey"
 | S3APP_PG_DB_USER_PW   | s3app                                | Only if db-type postgres: Password to authenticate against the PostgreSQL Database                                     |                                    |         |
 | S3APP_SECRET_KEY      | thisIsMyHiddenSecretKey              | A key which used to sign session cookies for protection against cookie data tampering. In production please change it. |                                    |         |
 
-# The start parameter
+## The start parameter
 To start of the S3App server simply call `s3app-run` as shown above. You have has the following parameter:
 
 | name     | short        | example   | description                            | default   |
@@ -191,4 +198,4 @@ optional arguments:
 -p PORT, --port PORT  Listener Host Port. Default: 8080.
 -t THREADS, --threads THREADS  Threads for parallelization. Default: 4.
 ```
-
+   

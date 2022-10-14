@@ -22,10 +22,10 @@ spec:
     - protocol: TCP
       port: {{ .Values.listenerPort }}
       targetPort: {{ template "s3app.container.listener.port" $ }}
-{{- if eq .Values.k8s.service.type "NoidePort" }}
+{{- if eq .Values.k8s.service.type "NodePort" }}
       nodePort: {{ .Values.k8s.service.nodePort }}
 {{- end }}
-{{- if .Values.k8s.service.externaIPs }}
+{{- if .Values.listenerIPs }}
   externalIPs:
-{{ toYaml .Values.k8s.service.externaIPs | indent 4 }}
+{{ toYaml .Values.listenerIPs | indent 4 }}
 {{- end }}

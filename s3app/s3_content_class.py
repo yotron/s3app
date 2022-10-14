@@ -1,6 +1,8 @@
 import os
+from urllib.parse import urlsplit
 
 import botocore
+from botocore.config import Config
 import boto3, json, tempfile
 from types import SimpleNamespace
 
@@ -27,6 +29,7 @@ class S3AccessConfig:
     s3SecretKey = ""
     s3TrustCaBundle = ""
     s3Buckets = {}
+    isAWS = False
 
     def fromJson(self, jsonStr):
         simpleNamespaceObject = json.loads(jsonStr, object_hook=lambda d: SimpleNamespace(**d))
@@ -118,6 +121,7 @@ class S3:
     def __init__(self):
         self.s3WebData = S3WebData()
 
+
     def initAccesses(self):
         self.s3WebData.currentAccessName = list(self.s3AccessConfigs.keys())[0]
         self.setInitialBucketname()
@@ -131,18 +135,29 @@ class S3:
             self.s3WebData.currentBucketName = None
         current_app.logger.debug("Current bucket name is %s", self.s3WebData.currentBucketName)
 
-    def getBoto3Client(self):
+    def getBoto3Client(self, region_name=None):
         verifyPath=None
         s3AccessConfig = self.s3AccessConfigs[self.s3WebData.currentAccessName]
         if s3AccessConfig.s3TrustCaBundle != "":
             verifyPath = s3AccessConfig.setCaBundleFile()
-        client = boto3.client(
-            's3',
-            aws_access_key_id=self.s3AccessConfigs[self.s3WebData.currentAccessName].s3AccessKey,
-            aws_secret_access_key=self.s3AccessConfigs[self.s3WebData.currentAccessName].s3SecretKey,
-            endpoint_url=self.s3AccessConfigs[self.s3WebData.currentAccessName].s3DefaultEndpointUrl,
-            verify=verifyPath
-        )
+        client = {}
+        if region_name is None:
+            client = boto3.client(
+                's3',
+                aws_access_key_id=self.s3AccessConfigs[self.s3WebData.currentAccessName].s3AccessKey,
+                aws_secret_access_key=self.s3AccessConfigs[self.s3WebData.currentAccessName].s3SecretKey,
+                verify=verifyPath
+            )
+        else:
+            client = boto3.client(
+                's3',
+                aws_access_key_id=self.s3AccessConfigs[self.s3WebData.currentAccessName].s3AccessKey,
+                aws_secret_access_key=self.s3AccessConfigs[self.s3WebData.currentAccessName].s3SecretKey,
+                region_name=region_name,
+                verify=verifyPath
+            )
+        if not self.s3AccessConfigs[self.s3WebData.currentAccessName].isAWS:
+            client.endpointUrls = self.s3AccessConfigs[self.s3WebData.currentAccessName].s3DefaultEndpointUrl
         current_app.logger.debug("Boto Client defined.")
         return client
 
@@ -177,9 +192,10 @@ class S3:
 
     def getPresignedUrl(self, key):
         current_app.logger.debug("Define presigned URL for key: %s and bucket: %s", key, self.s3WebData.currentBucketName)
-        s3client = self.getBoto3Client()
-        return s3client.generate_presigned_url('get_object', Params={'Bucket': self.s3WebData.currentBucketName,
-                                                                     'Key': key}, ExpiresIn=3600)
+        s3client = self.getBoto3Client(self.s3AccessConfigs[self.s3WebData.currentAccessName].s3Buckets[self.s3WebData.currentBucketName].region)
+        preSignedURL = s3client.generate_presigned_url('get_object', Params={'Bucket': self.s3WebData.currentBucketName,
+                                                                              'Key': key}, ExpiresIn=3600)
+        return preSignedURL
 
     def setPages(self, prefix):
         current_app.logger.debug("Define pages for prefix: %s", prefix)
@@ -202,3 +218,5 @@ class S3:
         current_app.logger.debug("Page setting is: %s", json.dumps(self.pages))
         if self.s3WebData.pageAmount == 1 and prefix != "" and self.s3WebData.currentSearchPrefix == "":  # bug in IONOS Cloud S3?
             self.s3WebData.entriesAmount = self.s3WebData.entriesAmount - 1
+
+

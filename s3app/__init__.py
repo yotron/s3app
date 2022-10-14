@@ -65,7 +65,7 @@ app.logger.info("The APP is running in {LOGLEVEL} mode.".format(LOGLEVEL=logging
 
 if "S3APP_APP_NAME" in app.config:
     app.config["APP_NAME"] = app.config["S3APP_APP_NAME"]
-app.logger.info("Starting A3App with name {APP_NAME}.".format(APP_NAME=app.config["APP_NAME"]))
+app.logger.info("Starting S3App with name {APP_NAME}.".format(APP_NAME=app.config["APP_NAME"]))
 
 if "S3APP_APP_ICON" in app.config:
     app.config["APP_ICON"] = app.config["S3APP_APP_ICON"]
@@ -81,13 +81,13 @@ app.register_blueprint(base)
 
 # Register Flask error handler
 app.register_error_handler(InternalServerError, handle_500)
-app.register_error_handler(404, logout_user)
+app.register_error_handler(401, logout_user)
 
 # Init Appbuilder Authentication and Authorization
 appbuilder = AppBuilder(app, db.session, base_template='appbuilder/baselayout.html',
                         security_manager_class=S3SecurityManager, indexview=S3View, menu=Menu(reverse=False))
 appbuilder.add_view(S3AccessModelView, "List S3Access", category="Security")
-appbuilder.add_view(S3GroupModelView, "List S3Groups", category="Security")
+appbuilder.add_view(S3GroupModelView, "List Groups", category="Security")
 appbuilder.add_view(S3EndpointModelView, "List S3Endpoints", category="Security")
 appbuilder.add_view_no_menu(S3View())
 appbuilder.add_view_no_menu(S3IndexView())

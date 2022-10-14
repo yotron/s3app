@@ -9,7 +9,7 @@ base = Blueprint("base", __name__)
 
 @base.route('/favicon.ico')
 def favicon():
-    return redirect(url_for('static', filename='img/favicon.ico'))
+    return redirect(url_for('static', filename='img/favicon.ico'), 308)
 
 
 @base.route('/logout/', methods=['GET'])

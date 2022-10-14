@@ -12,6 +12,7 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 data:
-  WAITRESS_THREADS: "{{ .Values.app.server.threadsPerReplica }}"
-  LiSTENER_IP: 0.0.0.0
-  LiSTENER_PORT: '8080'
+  S3APP_THREADS: "{{ .Values.app.server.threadsPerReplica }}"
+  S3APP_LISTENER_IP: 0.0.0.0
+  S3APP_LISTENER_PORT: '8080'
+  S3APP_CONF_FILE: /usr/src/app/webapp/.env

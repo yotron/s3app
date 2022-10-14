@@ -1,18 +1,18 @@
 FROM python:alpine
 
 WORKDIR /usr/src/app
-ENV S3A_THREADS 4
-ENV S3A_LiSTENER_IP 0.0.0.0
-ENV S3A_LiSTENER_PORT 8080
-
 
 RUN apk --no-cache add build-base
 
 COPY setup.cfg ./
 COPY pyproject.toml ./
-RUN pip install -e .
+RUN pip install .
 
-RUN mkdir -p s3app
-COPY s3app/ ./s3app/
+RUN mkdir -p /usr/local/bin/s3app
+COPY s3app/ /usr/local/bin/s3app/
 
-ENTRYPOINT ["/bin/sh", "-c", "s3app --threads=$S3A_THREADS --host=$S3A_LiSTENER_IP --port=$S3A_LiSTENER_PORT"]
+ENV S3APP_THREADS 4
+ENV S3APP_LISTENER_IP 0.0.0.0
+ENV S3APP_LISTENER_PORT 8080
+
+ENTRYPOINT ["/bin/sh", "-c", "s3app-run --threads=$S3APP_THREADS --host=$S3APP_LISTENER_IP --port=$S3APP_LISTENER_PORT"]

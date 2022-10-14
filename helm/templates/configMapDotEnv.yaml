@@ -13,27 +13,27 @@ metadata:
 {{- end }}
 data:
   .env: |
-    APP_ICON={{ .Values.customize.icon }}
-    APP_TITLE={{ .Values.customize.title }}
-    DB_TYPE= {{ .Values.app.database }}
-    LOG_LEVEL= {{ .Values.logLevel }}
-    SECRET_KEY= ascascascasc
+    S3APP_APP_ICON={{ .Values.customize.icon }}
+    S3APP_APP_NAME={{ .Values.customize.title }}
+    S3APP_DB_TYPE= {{ .Values.app.database }}
+    S3APP_LOG_LEVEL= {{ .Values.logLevel }}
+    S3APP_SECRET_KEY = {{ .Values.app.secretKey }}
     {{- if eq .Values.app.database.type "postgres"  }}
     {{- with .Values.app.database }}
-    {{- if .pgExternal }}
-    PG_DB_HOST= {{ .pgDbHost }}
-    PG_DB_PORT= {{ .pgDbPort }}
-    PG_DB_NAME= {{ .pdDbName }}
-    PG_DB_USER_NAME= {{ .pgDbUserPw }}
-    PG_DB_USER_PW= {{ .pgDbUserPw }}
+    {{- if .pgInternal }}
+    S3APP_PG_DB_HOST= {{ .pgDbHost }}
+    S3APP_PG_DB_PORT= {{ .pgDbPort }}
+    S3APP_PG_DB_NAME= {{ .pdDbName }}
+    S3APP_PG_DB_USER_NAME= {{ .pgDbUserPw }}
+    S3APP_PG_DB_USER_PW= {{ .pgDbUserPw }}
     {{- end }}
     {{- end }}
     {{ else }}
     {{- with .Values.postgresql }}
-    PG_DB_HOST= {{ $.Values.postgresql.fullnameOverride }}.{{ $.Release.Namespace }}.svc
-    PG_DB_PORT= {{ .primary.service.ports.postgresql }}
-    PG_DB_NAME= {{ .auth.database }}
-    PG_DB_USER_NAME= {{ .auth.username }}
-    PG_DB_USER_PW= {{ .auth.password }}
+    S3APP_PG_DB_HOST= {{ $.Values.postgresql.fullnameOverride }}.{{ $.Release.Namespace }}.svc
+    S3APP_PG_DB_PORT= {{ .primary.service.ports.postgresql }}
+    S3APP_PG_DB_NAME= {{ .auth.database }}
+    S3APP_PG_DB_USER_NAME= {{ .auth.username }}
+    S3APP_PG_DB_USER_PW= {{ .auth.password }}
     {{- end }}
     {{- end }}

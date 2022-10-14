@@ -132,6 +132,10 @@ FAB_ROLES = {
         ["S3View", "can_get"],
         ["S3View", "can_list"],
         ["S3UserDBModelView", "can_userinfo"],
+        ["ResetMyPasswordView", "can_this_form_post"],
+        ["ResetMyPasswordView", "can_this_form_get"],
+        ["ResetMyPasswordView", "can_this_form_get"],
+        ["S3UserDBModelView", "resetmypassword"],
         ["UserInfoEditView", "can_this_form_get"],
         ["S3", "menu_access"],
         ["S3Index", "can_list"]

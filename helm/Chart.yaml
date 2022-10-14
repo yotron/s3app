@@ -1,13 +1,19 @@
 apiVersion: v2
+version: 1.0.0
 appVersion: 1.0.0
-name: yotron-s3-manager
-description: This is a HELM chart for yotorn-s3-manager.
+name: s3app
+description: |
+  S3App simplifies the access to a S3Buckets with a provider independent web based frontend which allows
+  the visualizing and the management of the content of S3 buckets.
 home: https://www.yotron.de
 icon: https://www.yotron.de/img/logo-yotron.png
+sources:
+  - https://github.com/yotron/s3app/
 dependencies:
   - name: postgresql
     version: "11.9.5"
     repository: https://charts.bitnami.com/bitnami
+    condition: app.database.pgInternal
   - name: k8s-secrets
     version: 1.0.0
     repository: http://helm.yotron.de
@@ -16,4 +22,4 @@ dependencies:
 maintainers:
 - email: joern.kleinbub@yotron.de
   name: joern.kleinbub
-version: 1.0.0
+  url: https://www.yotron.de

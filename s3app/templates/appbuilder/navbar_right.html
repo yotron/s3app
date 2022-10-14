@@ -39,23 +39,23 @@
         </a>
         <ul class="dropdown-menu">
             {% set ns = namespace(firstEntry=true) %}
-            {% for entryName in ['List Users', 'List Roles'] %}
+            {% for entryName in ['List Users', 'List Groups'] %}
                 {% set entry = menu.find(entryName) %}
                 {% if entry | is_menu_visible %}
                      {% if ns.firstEntry == true %}
                         {% set ns.firstEntry = false %}
-                        <li class="title">Manage User/Roles</li>
+                        <li class="title">Edit Users/Groups</li>
                      {% endif %}
                      <li class="entry">{{ menu_item(entry) }}</li>
                 {% endif %}
             {% endfor %}
             {% set ns = namespace(firstEntry=true) %}
-            {% for entryName in ['List S3Access', 'List S3Groups', 'List S3Endpoints'] %}
+            {% for entryName in ['List S3Access', 'List S3Endpoints'] %}
                 {% set entry = menu.find(entryName) %}
                 {% if entry | is_menu_visible %}
                     {% if ns.firstEntry == true %}
                         {% set ns.firstEntry = false %}
-                        <li class="title">Manage S3</li>
+                        <li class="title">Edit S3</li>
                     {% endif %}
                     <li class="entry">{{ menu_item(entry) }}</li>
                 {% endif %}

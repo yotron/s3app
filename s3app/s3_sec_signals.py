@@ -21,6 +21,8 @@ def userloggedin(app, user):
         s3AccessConfig.s3EndpointName = result['name']
         s3AccessConfig.s3TrustCaBundle = result['trust_ca_bundle']
         verifyPath = None
+        if result['url'].endswith("amazonaws.com"):
+            s3AccessConfig.isAWS = True
         if s3AccessConfig.s3TrustCaBundle != "":
             verifyPath = s3AccessConfig.setCaBundleFile()
         s3conn = boto3.client('s3',

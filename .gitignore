@@ -11,3 +11,4 @@
 *.log
 /helm/charts/
 /helm/Chart.lock
+values.yaml_*

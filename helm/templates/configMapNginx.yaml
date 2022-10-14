@@ -24,7 +24,9 @@ data:
       {{- else }}
       listen       {{ $.Values.listenerPort }};
       {{- end }}
+      {{- if $.Values.hostnames  }}
       server_name  {{ join " " $.Values.hostnames }};
+      {{- end }}
       access_log   /dev/stdout  main;
 
       # serve static files
