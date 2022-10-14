@@ -99,7 +99,6 @@ Depend on your environment and knowledge in Python the process can be different.
 4. Start S3App server
    ```   
    (s3app) vagrant@bullseye:~$ s3app-run --host=0.0.0.0 --port=8080
-   The APP is running in DEBUG mode.
    2022-10-06 15:21:07,382:INFO:flask_appbuilder.base:Registering class S3View on menu 
    2022-10-06 15:21:07,383:INFO:flask_appbuilder.baseviews:Registering route /s3/<string:prefixUrl> ('GET',)
    2022-10-06 15:21:07,383:INFO:flask_appbuilder.baseviews:Registering route /s3/ ('GET',)
@@ -113,7 +112,7 @@ Depend on your environment and knowledge in Python the process can be different.
 
 4. Open Browser and start S3App with one of the IPs mentioned above:
 
-   ![Login Site of S3Maanger.png](s3app.png)
+   ![Login Site of S3App](https://github.com/yotron/s3app/blob/main/a3app.png)
 
    Your will automatically redirected to http://x.x.x.x:8080/login
 
@@ -125,7 +124,7 @@ Depend on your environment and knowledge in Python the process can be different.
 
    **Password**: admin
 
-   ![Dashboard of S3App](s3appdashboard.png)
+   ![Dashboard of S3App](https://github.com/yotron/s3app/blob/main/a3appdashboard.png)
 
 ### HELM
 You find the installation instructions for Kubernetes [here](https://artifacthub.io/packages/helm/yotron-helm-charts/s3app)

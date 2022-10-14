@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "s3app"
-version = "0.8.9"
+version = "0.8.11"
 description = "S3App simplifies the access to a S3Buckets with a provider independent web based frontend which allows the visualizing and the management of the content of S3 buckets with an S3 provider independent web application."
 readme = "README.md"
 authors = [{ name = "Jörn Kleinbub", email = "joern.kleinbub@yotron.de" }]
