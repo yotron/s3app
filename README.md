@@ -112,7 +112,7 @@ Depend on your environment and knowledge in Python the process can be different.
 
 4. Open Browser and start S3App with one of the IPs mentioned above:
 
-   ![Login Site of S3App](https://github.com/yotron/s3app/blob/main/a3app.png)
+   ![Login Site of S3App](https://www.yotron.de/s3app/login.png)
 
    Your will automatically redirected to http://x.x.x.x:8080/login
 
@@ -124,7 +124,7 @@ Depend on your environment and knowledge in Python the process can be different.
 
    **Password**: admin
 
-   ![Dashboard of S3App](https://github.com/yotron/s3app/blob/main/a3appdashboard.png)
+   ![Dashboard of S3App](https://www.yotron.de/s3app/dashboard_full.png)
 
 ### HELM
 You find the installation instructions for Kubernetes [here](https://artifacthub.io/packages/helm/yotron-helm-charts/s3app)
