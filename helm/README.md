@@ -13,7 +13,7 @@ provider of managed S3 are available just like software solutions to set up an p
 **S3App simplifies** the access to a S3Buckets with a provider independent web based frontend which allows
 the visualizing and the management of the content of S3 buckets.
 
-For further information and the manual, please see [s3app/manual](https://www.yotron.de/s3app/manual/)
+For further information and the manual, please see [YOTRON/s3app](https://www.yotron.de/s3app/)
 
 ## Content
 This HELM package contains th following applications:
