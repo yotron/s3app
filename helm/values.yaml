@@ -40,7 +40,7 @@ tls:
 nginxproxy:
   enabled: true
   image: nginx
-  tag: 1.23.1-alpine
+  tag: 1.23.2-alpine
   clientMaxBodySize: 10m
   clientConnectTimeout: 90
   proxySendTimeout: 90
