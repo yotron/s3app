@@ -1,5 +1,5 @@
 #!/bin/sh
-deacivate
+deactivate
 rm -rf build
 rm -rf dist
 python3 -m build

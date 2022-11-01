@@ -1,8 +1,7 @@
 [![yotron](https://www.yotron.de/img/logo-yotron.png)](https://www.yotron.de)
 
-[YOTRON](https://www.yotron.de) is a consultancy company which is focused on DevOps, Cloudmanagement and
+[YOTRON](https://www.yotron.de) is a consultancy company which is focused on DevOps, cloud management and
 Data Management with NOSQL and SQL-Databases. Visit us on [www.yotron.de](https://www.yotron.de)
-ement with NOSQL and SQL-Databases.
 
 # S3App
 S3 (Simple Storage Solution) is a file storage services which is part of Cloud solutions. It is known for its
@@ -41,10 +40,13 @@ but you can also use separated applications.
 #### Prerequisites
 - [Python3](https://www.python.org/)
 - [Python-pip](https://pip.pypa.io) for dependency installation
+- OpenLDAP for LDAP authentication
+- SSL for secured LDAP authentication
 - recommended: python3-venv to create a virtual environment for Python3
 - recommended: [PostgreSQL](https://www.postgresql.org/) database for the S3App metadata
 - recommended: A reverse proxy with TLS termination (e.g. NGINX).
 
+#### Prerequisites Python and pip
 S3App supports all current Python3 versions. It is tested with Python 3.9.x and 3.10.x
 
 To check which Python version is running:
@@ -65,9 +67,16 @@ If you need a Python installation from the scratch. Python3, Pip3 and python3-ve
 For Debian/Ubuntu:
 `sudo apt-get install python3 python3-pip python3-venv`
 
-For CentOS:
+For RedHat/CentOS:
 `sudo yum install python3 python3-pip python3-venv`
 
+#### Prerequisites OpenLDAP and SSL
+For authentication packages for authentication like OpenLDAP and SSL are needed  
+For Debian/Ubuntu:
+`sudo apt-get install libsasl2-dev python-dev libldap2-dev libssl-dev`
+
+For RedHat/CentOS:
+`sudo yum install python-devel openldap-devel`
 
 #### Installation
 There are a lot of variants how to start a Python web project. We use a Python virtual environment for setting up S3App on a virtual environment. 
@@ -143,7 +152,7 @@ For example, for Linux you can set the environment variable with:
 ```
 export S3APP_CONF_FILE=/etc/s3app/.s3app
 ```
-
+### The S3APP configuration
 The config file can contain the following parameters:
 
 ```
@@ -160,7 +169,13 @@ S3APP_PG_DB_USER_NAME = "s3app"
 S3APP_SECRET_KEY = "thisIsMyHiddenSecretKey"
 ```
 
+### Authentication with LDAP
+To allow authentication with LDAP, a LDAP group must be mapped onto the S3App Role `S3User` or `Admin` . After the first authentication a new user, the user must be added to the `S3Access` 
+or `S3Group`. Please see the manual of S3App.
+
 ### The parameter of the config file
+#### S3APP
+
 | name                  | example                              | description                                                                                                            | possible values                    | default |
 |-----------------------|--------------------------------------|------------------------------------------------------------------------------------------------------------------------|------------------------------------|---------|
 | S3APP_APP_NAME        | My Fancy S3 App                      | The name of your S3App. It is display in the head of your application.                                                 |                                    |         |
@@ -174,6 +189,43 @@ S3APP_SECRET_KEY = "thisIsMyHiddenSecretKey"
 | S3APP_PG_DB_USER_NAME | s3app                                | Only if db-type postgres: Username to authenticate against the PostgreSQL Database                                     |                                    |         |                      
 | S3APP_PG_DB_USER_PW   | s3app                                | Only if db-type postgres: Password to authenticate against the PostgreSQL Database                                     |                                    |         |
 | S3APP_SECRET_KEY      | thisIsMyHiddenSecretKey              | A key which used to sign session cookies for protection against cookie data tampering. In production please change it. |                                    |         |
+
+#### Authentication general
+
+| name                        | example  | description                                                                                                                             | possible values | default   |
+|-----------------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------|-----------------|-----------|
+| S3APP_AUTH_TYPE             | database | Parameter to define the authentication method. It can be an authentication via LDAP or via the default database with name and password. | ldap, database  | database  |
+| AUTH_USER_REGISTRATION      |          | Parameter to define if a user can self registrate to S3App. With LDAP it must be set to True.                                           | True, False     | False     |
+| AUTH_USER_REGISTRATION_ROLE |          | Default role a user, when registered or authenticated via LDAP firstly.                                                                 | S3User, Admin   | S3User    |
+| AUTH_ROLES_MAPPING          |          | Mapping a LDAP group onto a S3App role `S3User` or `Admin`.                                                                             |                 |           |
+| S3APP_SESSION_LIFETIME      | 1800     | Seconds of inactivity after which a user must re-login.                                                                                 |                 | 600       |
+
+Example of a role mapping
+```
+AUTH_ROLES_MAPPING = {
+    "cn=s3user,ou=groups,dc=example,dc=com": ["S3Users"],
+    "cn=s3appadmins,ou=groups,dc=example,dc=com": ["Admin"],
+}
+```
+
+#### Authentication LDAP
+| name                      | example                                         | description                                                                                               | possible values | default |
+|---------------------------|-------------------------------------------------|-----------------------------------------------------------------------------------------------------------|-----------------|---------|
+| AUTH_LDAP_SERVER          | ldap://ldap.example.com                         | The URL of the LDAP server.                                                                               |                 |         |
+| AUTH_LDAP_USE_TLS         | False                                           | If the LDAP server allows TLS secured communication set to True.                                          | True, False     |         |
+| AUTH_LDAP_FIRSTNAME_FIELD | givenName                                       | Name of the field of the person LDAP entity with the given name.                                          |                 |         |
+| AUTH_LDAP_LASTNAME_FIELD  | sn                                              | Name of the field of the person LDAP entity with the last name.                                           |                 |         |
+| AUTH_LDAP_EMAIL_FIELD     | email                                           | Name of the field of the person LDAP entity with the email address.                                       |                 |         |
+| AUTH_LDAP_USERNAME_FORMAT | uid=%s,ou=users,dc=example,dc=com               | Distinguished name of the user to authenticate. `%s` will be replaced by the username of the S3App login. |                 |         |
+| AUTH_LDAP_APPEND_DOMAIN   | example.com                                     | When a username always has a domain appendix.                                                             |                 |         |
+| AUTH_LDAP_SEARCH          | ou=users,dc=example,dc=com                      | LDAP search string if a user is part of an organizational unit.                                           |                 |         |
+| AUTH_LDAP_UID_FIELD       | uid                                             | When using a LDAP search the filed name with the username of the organizational unit.                     |                 |         |
+| AUTH_LDAP_BIND_USER       | ldapadmin                                       | The bind user used for authentication against LDAP.                                                       |                 |         |
+| AUTH_LDAP_BIND_PASSWORD   | myHiddenPassword                                | The password of the bin user sed for authentication against LDAP.                                         |                 |         |
+| AUTH_LDAP_SEARCH_FILTER   | (memberOf=cn=myTeam,ou=teams,dc=example,dc=com) | Filter the user which are allowed to access S3App generally.                                              |                 |         |
+| AUTH_LDAP_GROUP_FIELD     | memberOf                                        | When using AUTH_ROLES_MAPPING the name of the field with the role DN.                                     |                 |         |
+
+You find further information about how to configure LDAP against Microsoft AD or OpenLDAP [here](https://flask-appbuilder.readthedocs.io/en/latest/security.html#authentication-ldap).
 
 ## The start parameter
 To start of the S3App server simply call `s3app-run` as shown above. You have has the following parameter:

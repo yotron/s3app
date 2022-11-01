@@ -14,3 +14,8 @@
 {{- end -}}
 {{- end -}}
 
+{{- define "truefalse.wrapper" -}}
+{{- if . -}}True
+{{- else -}}False
+{{- end -}}
+{{- end -}}

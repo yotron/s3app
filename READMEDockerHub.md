@@ -1,8 +1,7 @@
 [![yotron](https://www.yotron.de/img/logo-yotron.png)](https://www.yotron.de)
 
 [YOTRON](https://www.yotron.de) is a consultancy company which is focused on DevOps, Cloudmanagement and
-Data Management with NOSQL and SQL-Databases. Visit us on [ www.yotron.de ](https://www.yotron.de)
-ement with NOSQL and SQL-Databases. Visit us on www.yotron.de
+Data Management with NOSQL and SQL-Databases. Visit us on [ www.yotron.de ](https://www.yotron.de).
 
 # S3App
 S3 (Simple Storage Solution) is a file storage services which is part of Cloud solutions. It is known for its

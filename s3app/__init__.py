@@ -1,6 +1,7 @@
 import argparse
 import os, logging
 import sys
+from datetime import timedelta
 from os.path import join, dirname
 from pathlib import Path
 from waitress import serve
@@ -25,6 +26,14 @@ from s3app.s3_content_view import S3View, S3IndexView
 from s3app.s3_sec_signals import userloggedin, userloggedout
 from s3app.s3_content_rest import Access, Bucket, Page, MaxKeys
 from flask_restful import Api
+
+from flask_appbuilder.security.manager import (
+    AUTH_OID,
+    AUTH_REMOTE_USER,
+    AUTH_DB,
+    AUTH_LDAP,
+    AUTH_OAUTH,
+)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 # init Flask
@@ -70,6 +79,14 @@ app.logger.info("Starting S3App with name {APP_NAME}.".format(APP_NAME=app.confi
 if "S3APP_APP_ICON" in app.config:
     app.config["APP_ICON"] = app.config["S3APP_APP_ICON"]
 app.logger.info("Adding {APP_ICON} as App icon.".format(APP_ICON=app.config["APP_ICON"]))
+
+app.config["AUTH_TYPE"] = AUTH_DB
+if app.config["S3APP_AUTH_TYPE"] == "ldap":
+    app.config["AUTH_TYPE"] = AUTH_LDAP
+
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=10)
+if app.config["S3APP_SESSION_LIFETIME"] is not None:
+    app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(seconds=int(app.config["S3APP_SESSION_LIFETIME"]))
 
 # Init Database
 server_session = Session(app)

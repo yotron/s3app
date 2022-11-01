@@ -13,27 +13,90 @@ metadata:
 {{- end }}
 data:
   .env: |
-    S3APP_APP_ICON={{ .Values.customize.icon }}
-    S3APP_APP_NAME={{ .Values.customize.title }}
-    S3APP_DB_TYPE= {{ .Values.app.database }}
-    S3APP_LOG_LEVEL= {{ .Values.logLevel }}
+    S3APP_APP_ICON = {{ .Values.customize.icon }}
+    S3APP_APP_NAME = {{ .Values.customize.title }}
+    S3APP_DB_TYPE = {{ .Values.app.database.type }}
+    S3APP_LOG_LEVEL = {{ .Values.logLevel }}
     S3APP_SECRET_KEY = {{ .Values.app.secretKey }}
     {{- if eq .Values.app.database.type "postgres"  }}
     {{- with .Values.app.database }}
     {{- if .pgInternal }}
-    S3APP_PG_DB_HOST= {{ .pgDbHost }}
-    S3APP_PG_DB_PORT= {{ .pgDbPort }}
-    S3APP_PG_DB_NAME= {{ .pdDbName }}
-    S3APP_PG_DB_USER_NAME= {{ .pgDbUserPw }}
-    S3APP_PG_DB_USER_PW= {{ .pgDbUserPw }}
+    S3APP_PG_DB_HOST = {{ .pgDbHost }}
+    S3APP_PG_DB_PORT = {{ .pgDbPort }}
+    S3APP_PG_DB_NAME = {{ .pdDbName }}
+    S3APP_PG_DB_USER_NAME = {{ .pgDbUserPw }}
+    S3APP_PG_DB_USER_PW = {{ .pgDbUserPw }}
     {{- end }}
     {{- end }}
-    {{ else }}
+    {{- else }}
     {{- with .Values.postgresql }}
-    S3APP_PG_DB_HOST= {{ $.Values.postgresql.fullnameOverride }}.{{ $.Release.Namespace }}.svc
-    S3APP_PG_DB_PORT= {{ .primary.service.ports.postgresql }}
-    S3APP_PG_DB_NAME= {{ .auth.database }}
-    S3APP_PG_DB_USER_NAME= {{ .auth.username }}
-    S3APP_PG_DB_USER_PW= {{ .auth.password }}
+    S3APP_PG_DB_HOST = {{ $.Values.postgresql.fullnameOverride }}.{{ $.Release.Namespace }}.svc
+    S3APP_PG_DB_PORT = {{ .primary.service.ports.postgresql }}
+    S3APP_PG_DB_NAME = {{ .auth.database }}
+    S3APP_PG_DB_USER_NAME = {{ .auth.username }}
+    S3APP_PG_DB_USER_PW = {{ .auth.password }}
+    {{- end }}
+    {{- end }}
+    S3APP_AUTH_TYPE = {{ .Values.auth.type }}
+    {{- if .Values.auth.userRegistration }}
+    AUTH_USER_REGISTRATION = {{ include "truefalse.wrapper" .Values.auth.userRegistration }}
+    {{- end }}
+    {{- if .Values.auth.userRegistrationRole }}
+    AUTH_USER_REGISTRATION_ROLE = {{ .Values.auth.userRegistrationRole }}
+    {{- end }}
+    {{- if .Values.auth.sessionLifeTime }}
+    S3APP_SESSION_LIFETIME = {{ .Values.auth.sessionLifeTime }}
+    {{- end }}
+    {{- if .Values.auth.rolesMapping }}
+    AUTH_ROLES_MAPPING = {{ .Values.auth.rolesMapping | toJson }}
+    {{- end }}
+    {{- if .Values.auth.ldap }}
+    {{- if .Values.auth.ldap.server }}
+    AUTH_LDAP_SERVER = {{ .Values.auth.ldap.server }}
+    {{- end }}
+    {{- if .Values.auth.ldap.tls }}
+    AUTH_LDAP_USE_TLS = {{ include "truefalse.wrapper" .Values.auth.ldap.tls }}
+    {{- end }}
+    {{- if .Values.auth.ldap.fields }}
+      {{- if .Values.auth.ldap.fields.firstname }}
+    AUTH_LDAP_FIRSTNAME_FIELD = {{ .Values.auth.ldap.fields.firstname }}
+      {{- end }}
+      {{- if .Values.auth.ldap.fields.lastname }}
+    AUTH_LDAP_LASTNAME_FIELD = {{ .Values.auth.ldap.fields.lastname }}
+      {{- end }}
+      {{- if .Values.auth.ldap.fields.email }}
+    AUTH_LDAP_EMAIL_FIELD = {{ .Values.auth.ldap.fields.email }}
+      {{- end }}
+      {{- if .Values.auth.ldap.fields.group }}
+    AUTH_LDAP_GROUP_FIELD = {{ .Values.auth.ldap.fields.group }}
+      {{- end }}
+      {{- if .Values.auth.ldap.fields.uid }}
+    AUTH_LDAP_UID_FIELD = {{ .Values.auth.ldap.fields.uid }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.auth.ldap.usernameDN }}
+    AUTH_LDAP_USERNAME_FORMAT = {{ .Values.auth.ldap.usernameDN }}
+    {{- end }}
+    {{- if .Values.auth.ldap.domain }}
+    AUTH_LDAP_APPEND_DOMAIN = {{ .Values.auth.ldap.domain }}
+    {{- end }}
+    {{- if .Values.auth.ldap.search }}
+    AUTH_LDAP_SEARCH = {{ .Values.auth.ldap.search }}
+    {{- end }}
+    {{- if .Values.auth.ldap.bind }}
+      {{- if .Values.auth.ldap.bind.user }}
+    AUTH_LDAP_BIND_USER = {{ .Values.auth.ldap.bind.user }}
+      {{- end }}
+      {{- if .Values.auth.ldap.bind.password }}
+    AUTH_LDAP_BIND_PASSWORD = {{ .Values.auth.ldap.bind.password }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.auth.ldap.searchFilter }}
+    AUTH_LDAP_SEARCH_FILTER = {{ .Values.auth.ldap.searchFilter }}
+    {{- end }}
+    {{- end }}
+    {{- if .Values.app.configs }}
+    {{- range $name, $value := .Values.app.configs }}
+    {{ $name }} = {{ $value }}
     {{- end }}
     {{- end }}

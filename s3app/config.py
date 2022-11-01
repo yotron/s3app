@@ -1,14 +1,6 @@
 import os
 from datetime import timedelta
 
-from flask_appbuilder.security.manager import (
-    AUTH_OID,
-    AUTH_REMOTE_USER,
-    AUTH_DB,
-    AUTH_LDAP,
-    AUTH_OAUTH,
-)
-
 # check env files
 FLASK_DEBUG = 0
 S3APP_DB_TYPE = "sqlite"
@@ -17,6 +9,7 @@ S3APP_PG_DB_NAME = "s3app"
 S3APP_PG_DB_PORT = 5432
 S3APP_PG_DB_USER_PW = "s3app"
 S3APP_PG_DB_USER_NAME = "s3app"
+S3APP_AUTH_TYPE = "database"
 
 SECRET_KEY = "thisIsMyHiddenSecretKey"  # from S3APP_SECRET_KEY
 
@@ -41,24 +34,19 @@ CSRF_ENABLED = True
 APP_NAME = "S3App by YOTRON"
 APP_ICON = "https://www.yotron.de/img/yotron_logo.svg"
 
-# ------------------------------
-# GLOBALS FOR APP Builder
-# ------------------------------
-# Uncomment to setup Your App name
-
-
 # ----------------------------------------------------
 # AUTHENTICATION CONFIG
 # ----------------------------------------------------
 # The authentication type
 # AUTH_OID : Is for OpenID
-# AUTH_DB : Is for database (username/password()
 # AUTH_LDAP : Is for LDAP
 # AUTH_REMOTE_USER : Is for using REMOTE_USER from web server
-AUTH_TYPE = AUTH_DB
+
 
 # Uncomment to setup Full admin role name
 AUTH_ROLE_ADMIN = 'Admin'
+AUTH_USER_REGISTRATION_ROLE = "S3User"
+AUTH_ROLES_SYNC_AT_LOGIN = True
 
 # Uncomment to setup Public role name, no authentication needed
 # AUTH_ROLE_PUBLIC = 'Public'
@@ -67,7 +55,7 @@ AUTH_ROLE_ADMIN = 'Admin'
 # AUTH_USER_REGISTRATION = True
 
 # The default user self registration role
-# AUTH_USER_REGISTRATION_ROLE = "Public"
+
 
 # When using LDAP Auth, setup the ldap server
 # AUTH_LDAP_SERVER = "ldap://ldapserver.new"
@@ -141,5 +129,4 @@ FAB_ROLES = {
     ]
 }
 
-PERMANENT_SESSION_LIFETIME = timedelta(minutes=10)
 SESSION_REFRESH_EACH_REQUEST = True

@@ -2,7 +2,7 @@ FROM python:alpine
 
 WORKDIR /usr/src/app
 
-RUN apk --no-cache add build-base
+RUN apk --no-cache add build-base openldap-dev
 
 COPY setup.cfg ./
 COPY pyproject.toml ./

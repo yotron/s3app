@@ -1,8 +1,7 @@
 [![yotron](https://www.yotron.de/img/logo-yotron.png)](https://www.yotron.de)
 
 [YOTRON](https://www.yotron.de) is a consultancy company which is focused on DevOps, Cloudmanagement and
-Data Management with NOSQL and SQL-Databases. Visit us on [www.yotron.de](https://www.yotron.de)
-ement with NOSQL and SQL-Databases.
+Data Management with NOSQL and SQL-Databases. Visit us on [www.yotron.de](https://www.yotron.de).
 
 # S3App
 ## Description
@@ -22,7 +21,7 @@ This HELM package contains th following applications:
 |------------|------------------------------------------------------------------------------------------------------------------|
 | S3App      | A web application to visualize and to manage the content of S3Bucket independently from Acceess- or Secret-Keys. |
 | NGINX      | An optional Reverse Proxy as a Kubernetes sidecar to S3App for security and TLS termination (https)              | 
-| PostgreSQL | An optional mwtadata database. Not needed for testing and can be provided externally.                            |
+| PostgreSQL | An optional metadata database. Not needed for testing and can be provided externally.                            |
 
 ## URLs
 
@@ -73,18 +72,18 @@ dependencies:
 # HELM Configuration
 
 ### S3App Customization Parameter
-| Name            | Default                                   | Example | Description                                                         |
-|-----------------|-------------------------------------------|---------|---------------------------------------------------------------------|
-| customize.title | S3App by YOTRON                           |         | Title of your project.                                              |
-| customize.icon  | https://www.yotron.de/img/yotron_logo.svg |         | Icon to be used in the Header. Can be any URL to an png, svg, ... . |
+| Name            | Default                                   | Example | Description                                                         | Config Parameter [(docu)](https://github.com/yotron/s3app/) |
+|-----------------|-------------------------------------------|---------|---------------------------------------------------------------------|-------------------------------------------------------------|
+| customize.title | S3App by YOTRON                           |         | Title of your project.                                              | S3APP_APP_NAME                                              |
+| customize.icon  | https://www.yotron.de/img/yotron_logo.svg |         | Icon to be used in the Header. Can be any URL to an png, svg, ... . | S3APP_APP_ICON                                              |
 
 ### Log and Server Parameter
-| Name         | Default | Example                 | Description                                                                                   |
-|--------------|---------|-------------------------|-----------------------------------------------------------------------------------------------|
-| logLevel     | info    |                         | LogLevel for the Logging. Can be: fatal, error, warning, info, debug                          | 
-| hostnames    | []      | ["s3app.k8s.yotron.de"] | Mandatory for Ingress and Reverse Proxy: List of hosts the S3App Web server is listening on.  |
-| listenerPort | 80      |                         | The port of S3App Web Server is listening on, like https://s3app.k8s.yotron.de:443            |
-| listenerIPs  |         | ["192.168.56.249"]      | IPs S3App shall listen on. Must be set to allow external Access to the app directly.          |
+| Name         | Default | Example                 | Description                                                                                   | Config Parameter [(docu)](https://github.com/yotron/s3app/) |
+|--------------|---------|-------------------------|-----------------------------------------------------------------------------------------------|-------------------------------------------------------------|
+| logLevel     | info    |                         | LogLevel for the Logging. Can be: fatal, error, warning, info, debug                          | S3APP_LOG_LEVEL                                             |
+| hostnames    | []      | ["s3app.k8s.yotron.de"] | Mandatory for Ingress and Reverse Proxy: List of hosts the S3App Web server is listening on.  |                                                             |
+| listenerPort | 80      |                         | The port of S3App Web Server is listening on, like https://s3app.k8s.yotron.de:443            |                                                             |
+| listenerIPs  |         | ["192.168.56.249"]      | IPs S3App shall listen on. Must be set to allow external Access to the app directly.          |                                                             |
 
 ### General K8S Parameter
 | Name                    | Default  | Example                                             | Description                                                                     |
@@ -96,23 +95,53 @@ dependencies:
 | k8s.service.nodePort    |          | 31005                                               | NodePort the S3App Service is reachable as a Kubernetes NodePort service.       |
 
 ### S3App Image, database and Performance Parameter
-| Name                         | Default            | Example           | Description                                                                                                                 |
-|------------------------------|--------------------|-------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| secretKey                    | changeMySecret     |                   | A key which used to sign session cookies for protection against cookie data tampering. In production please change it.      |
-| server.replicas              | 1                  |                   | Parallelization of S3App-Pods. Increase the to allow High Availability or a higher performance if needed-                   |
-| server.threadsPerReplica     | 4                  |                   | Thread per S3App Pod allowed to run.                                                                                        |
-| server.image                 | yotronpublic/s3app |                   | Docker Image URl of S3App.                                                                                                  |
-| server.imagePullPolicy       | IfNotPresent       |                   | Is set to IfNotPresent to pull the Docker image only if needed.                                                             |
-| server.tag                   | latest             |                   | Set the tag of the Docker Image you want to deploy.                                                                         |
-| server.database.type         | sqlite             |                   | Set the type of databse to store the S3App metadata. Must be `sqlite` or `postgres`.                                        |
-| server.database.pgInternal   | true               |                   | Set to `false` if you want to use a external PostgreSQL. Set to `true` to use the PostgreSQL deployed by this HELM package. |
-| server.database.pgDbHost     |                    | postgres.mydb.net | Only when `pgInternal`: `false`: The host of the external PostgreSQL                                                        |
-| server.database.pgDbPort     | 5432               |                   | Only when `pgInternal`: `false`: The listener port of the external PostgreSQL                                               |
-| server.database.pdDbName     |                    | s3app             | Only when `pgInternal`: `false`: The database name of the external PostgreSQL                                               |
-| server.database.pgDbUserName |                    | s3app             | Only when `pgInternal`: `false`: The user name to authenticate against the external PostgreSQL                              |
-| server.database.pgDbUserPw   |                    | s3app             | Only when `pgInternal`: `false`: The password to authenticate against the external PostgreSQL                               |
+| Name                             | Default            | Example           | Description                                                                                                                 | Config Parameter [(docu)](https://github.com/yotron/s3app/) |
+|----------------------------------|--------------------|-------------------|-----------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|
+| app.secretKey                    | changeMySecret     |                   | A key which used to sign session cookies for protection against cookie data tampering. In production please change it.      | S3APP_SECRET_KEY                                            |
+| app.server.replicas              | 1                  |                   | Parallelization of S3App-Pods. Increase the to allow High Availability or a higher performance if needed-                   |                                                             |
+| app.server.threadsPerReplica     | 4                  |                   | Thread per S3App Pod allowed to run.                                                                                        |                                                             |
+| app.server.image                 | yotronpublic/s3app |                   | Docker Image URl of S3App.                                                                                                  |                                                             |
+| app.server.imagePullPolicy       | IfNotPresent       |                   | Is set to IfNotPresent to pull the Docker image only if needed.                                                             |                                                             |
+| app.server.tag                   | latest             |                   | Set the tag of the Docker Image you want to deploy.                                                                         |                                                             |
+| app.server.database.type         | sqlite             |                   | Set the type of databse to store the S3App metadata. Must be `sqlite` or `postgres`.                                        | S3APP_DB_TYPE                                               |
+| app.server.database.pgInternal   | true               |                   | Set to `false` if you want to use a external PostgreSQL. Set to `true` to use the PostgreSQL deployed by this HELM package. |                                                             |
+| app.server.database.pgDbHost     |                    | postgres.mydb.net | Only when `pgInternal`: `false`: The host of the external PostgreSQL                                                        | S3APP_PG_DB_HOST                                            |
+| app.server.database.pgDbPort     | 5432               |                   | Only when `pgInternal`: `false`: The listener port of the external PostgreSQL                                               | S3APP_PG_DB_PORT                                            |
+| app.server.database.pdDbName     |                    | s3app             | Only when `pgInternal`: `false`: The database name of the external PostgreSQL                                               | S3APP_PG_DB_NAME                                            |
+| app.server.database.pgDbUserName |                    | s3app             | Only when `pgInternal`: `false`: The user name to authenticate against the external PostgreSQL                              | S3APP_PG_DB_USER_NAME                                       |
+| app.server.database.pgDbUserPw   |                    | s3app             | Only when `pgInternal`: `false`: The password to authenticate against the external PostgreSQL                               | S3APP_PG_DB_USER_PW                                         |
+| app.configs                      |                    |                   | Map with additional configurations for Flask Appbuilder.                                                                    |                                                             |
 |
 For performance tuning please read our remarks in [Github](https://github.com/yotron/s3app/)
+
+### Authentication general
+| name                      | Default  | Example | Description                                                                                                                             | Config Parameter [(docu)](https://github.com/yotron/s3app/) | 
+|---------------------------|----------|---------|-----------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|
+| auth.type                 | database | ldap    | Parameter to define the authentication method. It can be an authentication via LDAP or via the default database with name and password. | S3APP_AUTH_TYPE                                             |
+| auth.userRegistration     | false    |         | Parameter to define if a user can self registrate to S3App. With LDAP it must be set to True.                                           | AUTH_USER_REGISTRATION                                      |
+| auth.userRegistrationRole | S3User   |         | Default role a user, when registered or authenticated via LDAP firstly.                                                                 | AUTH_USER_REGISTRATION_ROLE                                 |
+| auth.rolesMapping         |          |         | Mapping a LDAP group onto a S3App role `S3User` or `Admin`.                                                                             | AUTH_ROLES_MAPPING                                          |
+| auth.sessionLifeTime      | 600      |         | Seconds of inactivity after which a user must re-login.                                                                                 | PERMANENT_SESSION_LIFETIME                                  |
+
+### Authentication LDAP
+| name                       | Default | Example                                         | Description                                                                                              | Config Parameter [(docu)](https://github.com/yotron/s3app/) |
+|----------------------------|---------|-------------------------------------------------|----------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|
+| auth.ldap.server           |         | ldap://ldap.example.com                         | The URL of the LDAP server.                                                                              | AUTH_LDAP_SERVER                                            |
+| auth.ldap.tls              |         | False                                           | If the LDAP server allows TLS secured communication set to True.                                         | AUTH_LDAP_USE_TLS                                           |
+| auth.ldap.fields.firstname |         | givenName                                       | Name of the field of the person LDAP entity with the given name.                                         | AUTH_LDAP_FIRSTNAME_FIELD                                   |
+| auth.ldap.fields.lastname  |         | sn                                              | Name of the field of the person LDAP entity with the last name.                                          | AUTH_LDAP_LASTNAME_FIELD                                    |
+| auth.ldap.fields.email     |         | email                                           | Name of the field of the person LDAP entity with the email address.                                      | AUTH_LDAP_EMAIL_FIELD                                       |
+| auth.ldap.fields.group     |         | memberOf                                        | When using AUTH_ROLES_MAPPING the name of the field with the role DN.                                    | AUTH_LDAP_GROUP_FIELD                                       |
+| auth.ldap.fields.uid       |         | uid                                             | When using a LDAP search the field name with the username of the organizational unit.                    | AUTH_LDAP_UID_FIELD                                         |
+| auth.ldap.usernameDN       |         | uid=%s,ou=users,dc=example,dc=com               | Distinguised name of the user to authenticate. `%s` will be replaced by the username of the S3App login. | AUTH_LDAP_USERNAME_FORMAT                                   |
+| auth.ldap.domain           |         | example.com                                     | When a username always has a domain appendix.                                                            | AUTH_LDAP_APPEND_DOMAIN                                     |
+| auth.ldap.search           |         | ou=users,dc=example,dc=com                      | LDAP search string if a user is part of an organizational unit.                                          | AUTH_LDAP_SEARCH                                            |
+| auth.ldap.bind.user        |         | ldapadmin                                       | The bind user used for authentication against LDAP.                                                      | AUTH_LDAP_BIND_USER                                         |
+| auth.ldap.bind.password    |         | myHiddenPassword                                | The password of the bin user sed for authentication against LDAP.                                        | AUTH_LDAP_BIND_PASSWORD                                     |
+| auth.ldap.searchFilter     |         | (memberOf=cn=myTeam,ou=teams,dc=example,dc=com) | Filter the user which are allowed to access S3App generally.                                             | AUTH_LDAP_SEARCH_FILTER                                     |
+
+
+You find further information about how to configure LDAP against Microsoft AD or OpenLDAP [here](https://flask-appbuilder.readthedocs.io/en/latest/security.html#authentication-ldap).
 
 ### TLS Parameter
 | Name           | Default | Example              | Description                                                                                                                                                                                     |
@@ -122,15 +151,15 @@ For performance tuning please read our remarks in [Github](https://github.com/yo
 | certs.tls      |         | see values.yaml file | Create a separated TLS cert and key pair with a name to allow TLS-termination with the Reverse Proxy or the Ingress Resources. Teh name is used in `tls.secretName`                             |
 
 ### Reverse Proxy Parameter
-| Name                            | Default       | Example | Description                                                  |
-|---------------------------------|---------------|---------|--------------------------------------------------------------|
-| nginxproxy.enabled              | true          |         | Set to true to add a NGINX Reverse Proxy as a sidecar.       |
-| nginxproxy.image                | nginx         |         | Name of the Docker image of the NGINX application.           |
-| nginxproxy.tag                  | 1.23.1-alpine |         | Tag of the Docker image of the NGINX application to use      |
-| nginxproxy.clientMaxBodySize    | 10m           |         | Set the max. size of the file to be uploaded.                |
-| nginxproxy.clientConnectTimeout | 90            |         | Set the time out for idled connections in seconds.           |
-| nginxproxy.proxySendTimeout     | 90            |         | Set the request time out during idling during send requests. |
-| nginxproxy.proxyReadTimeout     | 90            |         | Set the request time out during idling of read requests.     |
+| Name                            | Default | Example | Description                                                  |
+|---------------------------------|---------|---------|--------------------------------------------------------------|
+| nginxproxy.enabled              | true    |         | Set to true to add a NGINX Reverse Proxy as a sidecar.       |
+| nginxproxy.image                | nginx   |         | Name of the Docker image of the NGINX application.           |
+| nginxproxy.tag                  | alpine  |         | Tag of the Docker image of the NGINX application to use      |
+| nginxproxy.clientMaxBodySize    | 10m     |         | Set the max. size of the file to be uploaded.                |
+| nginxproxy.clientConnectTimeout | 90      |         | Set the time out for idled connections in seconds.           |
+| nginxproxy.proxySendTimeout     | 90      |         | Set the request time out during idling during send requests. |
+| nginxproxy.proxyReadTimeout     | 90      |         | Set the request time out during idling of read requests.     |
 
 ### Kubernetes Ingress Parameter
 | Name                     | Default | Example | Description                                                              |
