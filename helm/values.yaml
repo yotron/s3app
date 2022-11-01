@@ -25,7 +25,7 @@ app:
     threadsPerReplica: 4
     image: yotronpublic/s3app
     imagePullPolicy: IfNotPresent
-    tag: 1.1.1
+    tag: 1.1.2
   database:
     type: sqlite # postgres
     pgInternal: false

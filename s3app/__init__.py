@@ -85,7 +85,7 @@ if app.config["S3APP_AUTH_TYPE"] == "ldap":
     app.config["AUTH_TYPE"] = AUTH_LDAP
 
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=10)
-if app.config["S3APP_SESSION_LIFETIME"] is not None:
+if "S3APP_SESSION_LIFETIME" in app.config:
     app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(seconds=int(app.config["S3APP_SESSION_LIFETIME"]))
 
 # Init Database
