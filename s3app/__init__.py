@@ -18,13 +18,15 @@ from sqlalchemy import MetaData, create_engine
 
 from s3app.s3_server import S3ServerAroParser
 from s3app.s3_sec import S3SecurityManager
-from s3app.s3_base import base
-from s3app.s3_error import logout_user, handle_500
+from s3app.s3_general_rest import base
+from s3app.s3_general_error import logout_user, handle_500
 from s3app.s3_sec_models import Sqls
 from s3app.s3_sec_views import S3AccessModelView, S3GroupModelView, S3EndpointModelView
 from s3app.s3_content_view import S3View, S3IndexView
+from s3app.s3_manage_view import S3ManageView
 from s3app.s3_sec_signals import userloggedin, userloggedout
 from s3app.s3_content_rest import Access, Bucket, Page, MaxKeys
+from s3app.s3_manage_rest import Metrics
 from flask_restful import Api
 
 from flask_appbuilder.security.manager import (
@@ -106,8 +108,10 @@ appbuilder = AppBuilder(app, db.session, base_template='appbuilder/baselayout.ht
 appbuilder.add_view(S3AccessModelView, "List S3Access", category="Security")
 appbuilder.add_view(S3GroupModelView, "List Groups", category="Security")
 appbuilder.add_view(S3EndpointModelView, "List S3Endpoints", category="Security")
+appbuilder.add_view(S3ManageView, "S3Buckets", category="S3")
+appbuilder.add_view(S3IndexView, "S3Items", category="S3")
 appbuilder.add_view_no_menu(S3View())
-appbuilder.add_view_no_menu(S3IndexView())
+
 
 # init Flask RESTApi
 api = Api(app)
@@ -115,6 +119,7 @@ api.add_resource(Access, '/s3config/access/<string:accessname>')
 api.add_resource(Bucket, '/s3config/access/<string:accessname2>/bucket/<string:bucketname>')
 api.add_resource(MaxKeys, '/s3config/maxkeys/<string:maxkeys>')
 api.add_resource(Page, '/s3config/page/<string:page>')
+api.add_resource(Metrics, '/s3manage/metrics/<string:bucketname>')
 
 admin = appbuilder.sm.find_user(username="admin")
 

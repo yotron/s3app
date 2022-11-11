@@ -124,3 +124,27 @@ ul.breadcrumb li a:hover {
 .table-bordered {
     border: 0;
 }
+
+/* JSON Edito */
+#jsoneditor {
+    width: 500px;
+    height: 500px;
+}
+
+body, html {
+    font-family: "DejaVu Sans", sans-serif;
+}
+
+p, li {
+    font-size: 10.5pt;
+}
+
+code {
+    background: #f5f5f5;
+}
+
+*:disabled {
+    background-color: dimgrey;
+    color: linen;
+    opacity: 1;
+}

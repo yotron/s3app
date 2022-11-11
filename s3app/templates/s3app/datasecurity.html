@@ -1,0 +1,28 @@
+{% import 's3app/lib.html' as lib %}
+
+{# bucketEncryption #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_encryption", bucketConfig.bucketEncryption)
+],
+]
+%}
+{% with title="BucketEncryption", config=bucketConfig.bucketEncryption, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+{# bucketVersioning #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_encryption", bucketConfig.bucketVersioning)
+],
+]
+%}
+{% with title="BucketVersioning", config=bucketConfig.bucketVersioning, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+{# bucketReplication #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_replication", bucketConfig.bucketReplication)
+],
+]
+%}
+{% with title="bucketReplication", config=bucketConfig.bucketReplication, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}

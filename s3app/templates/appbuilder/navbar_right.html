@@ -60,6 +60,18 @@
                     <li class="entry">{{ menu_item(entry) }}</li>
                 {% endif %}
             {% endfor %}
+            {% set ns = namespace(firstEntry=true) %}
+            {% for entryName in ['S3Items','S3Buckets',] %}
+            {% set entry = menu.find(entryName) %}
+              {% set entry = menu.find(entryName) %}
+              {% if entry | is_menu_visible %}
+                {% if ns.firstEntry == true %}
+                  {% set ns.firstEntry = false %}
+                  <li class="title">S3</li>
+                {% endif %}
+                <li class="entry">{{ menu_item(entry) }}</li>
+              {% endif %}
+            {% endfor %}
             <li class="title">User</li>
             <li class="entry"><a href="{{appbuilder.get_url_for_userinfo}}">{{_("Profile")}}</a></li>
             <li class="entry"><a href="{{appbuilder.get_url_for_logout}}">{{_("Logout")}}</a></li>

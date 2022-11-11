@@ -1,0 +1,37 @@
+<div class="panel panel-default">
+    <div class="panel-heading">{{ title }}</div>
+    <div class="panel-body">
+        <div class="container-fluid manage_content">
+            {% if config.hasError %}
+            <div class="row">
+                <div class="col-12">An error occured.</div>
+            </div>
+            {% elif not config.isAllowed %}
+            <div class="row">
+                <div class="col-12">You do have the permission to read this info with this access.</div>
+            </div>
+            {% elif not config.isAvailable %}
+            <div class="row">
+                <div class="col-12">This function is not available for this S3-Endoint.</div>
+            </div>
+            {% elif not config.isActive %}
+            <div class="row">
+                <div class="col-12">Function is not active for this bucket.</div>
+            </div>
+            {% elif config.isActive %}
+                {% for rows in content %}
+                <div class="row">
+                    {% set grid = (12 / (rows|length))|int %}
+                    {% for value in rows %}
+                    <div class="col-md-{{ grid }}">{{ value }}</div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="row">
+                <div class="col-12">An error occured.</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

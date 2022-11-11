@@ -1,0 +1,28 @@
+{% import 's3app/lib.html' as lib %}
+
+{# bucket bucketPolicy #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_policy", bucketConfig.bucketPolicy)
+],
+]
+%}
+{% with title="BucketPolicy", config=bucketConfig.bucketPolicy, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+{# bucket bucketACL #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_acl", bucketConfig.bucketACL)
+],
+]
+%}
+{% with title="BucketACL", config=bucketConfig.bucketACL, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+{# bucket bucketACL #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_cors", bucketConfig.bucketCORS)
+],
+]
+%}
+{% with title="BucketCORS", config=bucketConfig.bucketCORS, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}

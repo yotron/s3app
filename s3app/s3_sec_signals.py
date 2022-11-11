@@ -1,7 +1,9 @@
 import boto3
 from flask import session, flash, current_app
 from sqlalchemy import MetaData, create_engine
-from .s3_content_class import S3, S3AccessConfig, S3BucketConfig
+from .s3_content_class import S3
+from .s3_general_class import S3AccessConfig
+from .s3_general_requests import *
 
 def userloggedin(app, user):
     current_app.logger.info(user.username + " logged in.")
@@ -20,38 +22,16 @@ def userloggedin(app, user):
         s3AccessConfig.s3Endpoint = result['url']
         s3AccessConfig.s3EndpointName = result['name']
         s3AccessConfig.s3TrustCaBundle = result['trust_ca_bundle']
-        verifyPath = None
-        if result['url'].endswith("amazonaws.com"):
-            s3AccessConfig.isAWS = True
-        if s3AccessConfig.s3TrustCaBundle != "":
-            verifyPath = s3AccessConfig.setCaBundleFile()
-        s3conn = boto3.client('s3',
-                              aws_access_key_id=s3AccessConfig.s3AccessKey,
-                              aws_secret_access_key=s3AccessConfig.s3SecretKey,
-                              endpoint_url=s3AccessConfig.s3DefaultEndpointUrl,
-                              region_name=s3AccessConfig.s3DefaultRegion,
-                              verify=verifyPath
-                              )
-        response = s3conn.list_buckets()
-        buckets = {}
-        for bucket in response['Buckets']:
-            bucketLocation = s3conn.get_bucket_location(Bucket=bucket['Name'])
-            bucketLocName = ""
-            if bucketLocation['LocationConstraint'] is not None:
-                bucketLocName = bucketLocation['LocationConstraint']
-            buckets[bucket['Name']] = S3BucketConfig(bucket['Name'], bucket['CreationDate'].utcnow().isoformat(),
-                                                     bucketLocName)
-        s3AccessConfig.s3Buckets = buckets
+        s3Client = S3Request.getBoto3Client(s3AccessConfig)
+        s3AccessConfig.s3Buckets = bucketListEnriched(s3Client, defaultRegion=s3AccessConfig.s3DefaultRegion)
         s3AccessConfigs[s3AccessConfig.s3AccessName] = s3AccessConfig
     if len(s3AccessConfigs.keys()) > 0:
         s3.s3AccessConfigs = s3AccessConfigs
-        s3.initAccesses()
-        s3.s3WebData.setBucketList(s3.s3AccessConfigs[s3.s3WebData.currentAccessName].s3Buckets)
-        s3.s3WebData.setAccessList(s3.s3AccessConfigs)
-        if s3.s3WebData.currentBucketName != "":
-            s3.setPages("")
+        s3.setWebdataAccessList(s3.s3AccessConfigs)
+        s3.setWebdataCurrentAccessName()
+        s3.initWebdataBucketObjectsView()
     else:
-        current_app.logger.info(user.username + " das no access configured.")
+        current_app.logger.info(user.username + " has no access configured.")
     session[user.id] = s3
 
 

@@ -1,29 +1,70 @@
 let bucketName = "";
-let tableData = {};
+
+function getPlaceholderText(dataConfig){
+    if (dataConfig.hasError) {
+        return  "An internal error occured.";
+    } else if (! dataConfig.isAllowed) {
+        return "Not allowed for this Access.";
+    } else if (! dataConfig.isAvailable) {
+        return "No buckets available.";
+    } else if (dataConfig.isActive) {
+        return "Select a bucket.";
+    } else {
+        return "An other error occured.";
+    }
+}
 
 $( document ).ready(function() {
-    $('#s3access').select2({
-        data: accessList
-    }).select2('val', setting.currentAccessName);
-    refreshTable();
-    paths = window.location.pathname.split('/');
-    if (setting.currentBucketName != null) {
-        $('#s3bucket').select2({
-            data: bucketList
-        }).select2('val', setting.currentBucketName);
-    } else {
-        $('#s3bucket').select2({
-            data: []
-        })
+    $('#s3accesses').select2({
+        data: accessData.data
+    }).select2('val', accessData.currentName);
+    bucketSelect2Config = getSelectConfig(bucketData);
+    bucketSelect2Config.placeholder = getPlaceholderText(bucketData);
+    $('#s3buckets').select2(bucketSelect2Config);
+    if (! bucketSelect2Config.disabled) {
+        $('#s3buckets').select2('val', bucketData.currentName);
     }
+    refreshTable();
     $('.dataTables_filter input')
-        .not(':input[type=submit]')
-        .val(setting.currentSearchPrefix);
+      .not(':input[type=submit]')
+      .val(objectData.currentSearchPrefix);
 });
 
 
+
+function getSelectConfig(dataConfig){
+    if (dataConfig.hasError) {
+        return {
+            data: [],
+            disabled: true,
+        }
+    } else if (! dataConfig.isAllowed) {
+        return {
+            data: [],
+            disabled: true,
+        }
+    } else if (! dataConfig.isAvailable) {
+        return {
+            data: [],
+            disabled: true,
+        }
+    } else if (dataConfig.isActive) {
+        return {
+            data: dataConfig.data,
+            disabled: false,
+        }
+    } else {
+        return {
+            data: [],
+            disabled: true,
+        }
+    }
+}
+
 function refreshTable(){
-    for (const [key, prefix] of Object.entries(commonPrefixes)) {
+    console.log(objectData.data)
+    let content = objectData.data
+    for (const [key, prefix] of Object.entries(objectData.commonPrefixesList)) {
         let arr = {
             'Key': prefix,
             'Size': -1,
@@ -32,19 +73,25 @@ function refreshTable(){
                 'DisplayName': ''
             }
         }
-        contents.unshift(arr);
+        content.unshift(arr);
     }
     const tmpJson = {
-        recordsTotal: setting.entriesAmount, // expected by DataTables to create pagination
-        recordsFiltered: setting.entriesAmount, // expected by DataTables to create pagination
-        data: contents, // expected by DataTables to populate the table
-        currentPage: setting.currentPageNumber // added by me to easily manage correct page displaying
+        recordsTotal: objectData.entriesAmount, // expected by DataTables to create pagination
+        recordsFiltered: objectData.entriesAmount, // expected by DataTables to create pagination
+        data: content, // expected by DataTables to populate the table
+        currentPage: objectData.currentPageNumber // added by me to easily manage correct page displaying
     }
+    placeholdertext = getPlaceholderText(objectData)
     let dataTableConfig = {
         ajax: function (data, callback, settings) {
             callback(
                 tmpJson
             )
+        },
+        language: {
+            "zeroRecords": placeholdertext,
+            "emptyTable":  placeholdertext,
+            "search": "Prefix Search:",
         },
         initComplete : function() {
             var input = $('.dataTables_filter input').unbind(),
@@ -60,14 +107,11 @@ function refreshTable(){
             $('.dataTables_filter').append($searchButton, $clearButton);
         },
         lengthMenu: [10, 20, 50, 100],
-        pageLength: setting.maxKeys,
+        pageLength: objectData.maxKeys,
         serverSide: true,
-        displayStart: (tmpJson.currentPage - 1) * setting.maxKeys,
+        displayStart: (tmpJson.currentPage - 1) * objectData.maxKeys,
         ordering: false,
         searching: true,
-        language: {
-            "search": "Prefix Search:"
-        },
         columns: [
             {
                 data: 'Key', render: {
@@ -95,7 +139,7 @@ function refreshTable(){
     if (tmpJson.currentPage == null) {
         dataTableConfig.paging = false
     }
-    $('#example').DataTable(dataTableConfig);
+    $('#s3content').DataTable(dataTableConfig);
 }
 
 function fileSizeFormat(b) {

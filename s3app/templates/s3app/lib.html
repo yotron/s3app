@@ -1,0 +1,18 @@
+{% macro get_jsoneditor(id, config) %}
+<div id="{{ id }}"></div>
+<script language="javascript" type="text/javascript">
+    // create the editor
+    const container_{{ id }} = document.getElementById("{{ id }}");
+    const options_{{ id }} = {
+        mode: 'preview',
+        mainMenuBar: false,
+        statusBar: false
+    };
+    const json_{{ id }} = {% if config.dataJson is defined %}{{ config.dataJson | safe }}{% endif %};
+    const editor_{{ id }} = new JSONEditor(container_{{ id }}, options_{{ id }}, json_{{ id }});
+</script>
+{% endmacro %}
+{% macro get_content_text(id, head, content) %}
+    <h4 id="{{ id }}_head">{{ head }}</h4>
+    <p id="{{ id }}_content">{{ content }}</p>
+{% endmacro %}
