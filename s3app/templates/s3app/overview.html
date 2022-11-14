@@ -10,7 +10,7 @@
    ],
 ]
 %}
-{% with title="Bucket", config={"isActive": true, "isAvailable": true, "hasError": false, "isAllowed": true}, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+{% with title="Bucket", config={"isAvailable": true, "hasError": false, "isAllowed": true}, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
 
 {# Metrics #}
 {% set content = [
@@ -19,7 +19,7 @@ lib.get_content_text('metrics_amount', 'Amount Keys (latest version)', 'Please w
 ],
 ]
 %}
-{% with title="Metrics", config={"isActive": true, "isAvailable": true, "hasError": false, "isAllowed": true}, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+{% with title="Metrics", config={"isAvailable": true, "hasError": false, "isAllowed": true}, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
 
 
 {# bucketWebsite #}

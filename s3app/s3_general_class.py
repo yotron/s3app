@@ -48,10 +48,10 @@ class DataConfig:
     dataJson: str
     currentName: str
     placeholder: str
-    isActive: bool
     isAvailable: bool
     isAllowed: bool
     hasError: bool
+    message: str
     commonPrefixesList = []
     currentKey: str
     currentKeyResolvedList = []
@@ -67,7 +67,6 @@ class DataConfig:
     keyCount: int
 
     def __init__(self):
-        self.isActive = False
         self.isAvailable = False
         self.isAllowed = False
         self.hasError = True

@@ -49,7 +49,7 @@ class S3:
         self.s3WebData.bucketData = deepcopy(listBucketsOfCurrentAccess)
         self.s3WebData.bucketData.data = []
         self.s3WebData.bucketData.dataJson = ""
-        if listBucketsOfCurrentAccess.isActive and listBucketsOfCurrentAccess.isAvailable and listBucketsOfCurrentAccess.isAllowed and not listBucketsOfCurrentAccess.hasError:
+        if listBucketsOfCurrentAccess.isAvailable and listBucketsOfCurrentAccess.isAllowed and not listBucketsOfCurrentAccess.hasError:
             self.setWebdataBucketList(listBucketsOfCurrentAccess)
             self.s3WebData.bucketData.currentName = list(listBucketsOfCurrentAccess.data.keys())[0]
             self.setPages("")

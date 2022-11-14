@@ -2,23 +2,11 @@
     <div class="panel-heading">{{ title }}</div>
     <div class="panel-body">
         <div class="container-fluid manage_content">
-            {% if config.hasError %}
+            {% if config.hasError or not config.isAllowed or not config.isAvailable %}
             <div class="row">
-                <div class="col-12">An error occured.</div>
+                <div class="col-12">{{ config.message }}</div>
             </div>
-            {% elif not config.isAllowed %}
-            <div class="row">
-                <div class="col-12">You do have the permission to read this info with this access.</div>
-            </div>
-            {% elif not config.isAvailable %}
-            <div class="row">
-                <div class="col-12">This function is not available for this S3-Endoint.</div>
-            </div>
-            {% elif not config.isActive %}
-            <div class="row">
-                <div class="col-12">Function is not active for this bucket.</div>
-            </div>
-            {% elif config.isActive %}
+            {% else %}
                 {% for rows in content %}
                 <div class="row">
                     {% set grid = (12 / (rows|length))|int %}
@@ -27,10 +15,6 @@
                     {% endfor %}
                 </div>
                 {% endfor %}
-            {% else %}
-            <div class="row">
-                <div class="col-12">An error occured.</div>
-            </div>
             {% endif %}
         </div>
     </div>

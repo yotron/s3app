@@ -27,10 +27,9 @@ class S3View(BaseView):
         requestSearchPrefix = request.args.get('searchPrefix', default=None)
         requestKey = ""
         currentBucket = s3.s3WebData.bucketData
-        if currentBucket.isActive and currentBucket.isAvailable and currentBucket.isAllowed and not currentBucket.hasError:
+        if currentBucket.isAvailable and currentBucket.isAllowed and not currentBucket.hasError:
             s3.setBucketItems(requestKey, requestSearchPrefix)
         else:
-            s3.s3WebData.objectData.isActive = currentBucket.isActive
             s3.s3WebData.objectData.isAvailable = currentBucket.isAvailable
             s3.s3WebData.objectData.isAllowed = currentBucket.isAllowed
             s3.s3WebData.objectData.hasError = currentBucket.hasError

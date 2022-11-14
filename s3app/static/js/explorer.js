@@ -1,25 +1,9 @@
-let bucketName = "";
-
-function getPlaceholderText(dataConfig){
-    if (dataConfig.hasError) {
-        return  "An internal error occured.";
-    } else if (! dataConfig.isAllowed) {
-        return "Not allowed for this Access.";
-    } else if (! dataConfig.isAvailable) {
-        return "No buckets available.";
-    } else if (dataConfig.isActive) {
-        return "Select a bucket.";
-    } else {
-        return "An other error occured.";
-    }
-}
-
 $( document ).ready(function() {
     $('#s3accesses').select2({
         data: accessData.data
     }).select2('val', accessData.currentName);
     bucketSelect2Config = getSelectConfig(bucketData);
-    bucketSelect2Config.placeholder = getPlaceholderText(bucketData);
+    bucketSelect2Config.placeholder = bucketData.message;
     $('#s3buckets').select2(bucketSelect2Config);
     if (! bucketSelect2Config.disabled) {
         $('#s3buckets').select2('val', bucketData.currentName);
@@ -29,8 +13,6 @@ $( document ).ready(function() {
       .not(':input[type=submit]')
       .val(objectData.currentSearchPrefix);
 });
-
-
 
 function getSelectConfig(dataConfig){
     if (dataConfig.hasError) {
@@ -48,15 +30,10 @@ function getSelectConfig(dataConfig){
             data: [],
             disabled: true,
         }
-    } else if (dataConfig.isActive) {
+    } else {
         return {
             data: dataConfig.data,
             disabled: false,
-        }
-    } else {
-        return {
-            data: [],
-            disabled: true,
         }
     }
 }
@@ -81,7 +58,7 @@ function refreshTable(){
         data: content, // expected by DataTables to populate the table
         currentPage: objectData.currentPageNumber // added by me to easily manage correct page displaying
     }
-    placeholdertext = getPlaceholderText(objectData)
+    placeholdertext = objectData.message
     let dataTableConfig = {
         ajax: function (data, callback, settings) {
             callback(

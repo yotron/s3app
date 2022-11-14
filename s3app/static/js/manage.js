@@ -22,19 +22,6 @@ $( document ).ready(function() {
     }
 });
 
-function getPlaceholderText(dataConfig){
-    if (dataConfig.hasError) {
-        return  "An internal error occured.";
-    } else if (! dataConfig.isAllowed) {
-        return "Not allowed to list buckets for this Access.";
-    } else if (! dataConfig.isAvailable) {
-        return "No buckets available.";
-    } else if (dataConfig.isActive) {
-        return "Select a bucket.";
-    } else {
-        return "An other error occured.";
-    }
-}
 
 function refreshTableBuckets(){
     let content = []
@@ -75,7 +62,7 @@ function refreshTableBuckets(){
             { data: 'Owner' },
         ],
         language: {
-            "emptyTable": getPlaceholderText(bucketData)
+            "emptyTable": bucketData.message
         },
     }
     if (tmpJson.currentPage == null) {

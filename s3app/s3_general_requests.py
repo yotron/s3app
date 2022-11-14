@@ -34,21 +34,23 @@ class S3Request():
 class S3RequestResult(DataConfig):
     def __init__(self, s3client, bucketName=None, **kwargs):
         try:
-            self.isActive = False
-            self.isAvailable = False
-            self.isAllowed = False
+            self.message = ""
             self.hasError = True
+            self.isAllowed = False
+            self.isAvailable = False
             response = self.call(s3client, bucketName, **kwargs)
             if self.handleResponseMetadata(response):
                 del response['ResponseMetadata']
                 if len(response) > 0:
-                    self.isActive = True
+                    # self.isAvailable = True
                     if 's3app_content' in response:
                         self.data = response['s3app_content']
                     else:
                         self.data = response
-                   # self.dataJson = json.dumps(self.data)
-                    # self.dataJson = json.dumps(self.data, default=lambda o: o.__dict__, indent=4)
+                else:
+                    self.message = "No data available."
+                # self.dataJson = json.dumps(self.data)
+                # self.dataJson = json.dumps(self.data, default=lambda o: o.__dict__, indent=4)
         except ClientError as e:
             if self.handleResponseMetadata(e.response) is None:
                 self.hasError = False
@@ -68,15 +70,18 @@ class S3RequestResult(DataConfig):
         return None
 
     def handleStatusCode(self, HTTPStatusCode):
-        if HTTPStatusCode == 403:
+        if HTTPStatusCode == 403:  # forbidden
             self.hasError = False
             self.isAvailable = True
-            self.isActive = True
-        elif HTTPStatusCode in [401]:
+            self.message = "You are not allowed ..."
+        elif HTTPStatusCode == 401:  # unauthorized
             self.hasError = False
-        elif 404 <= HTTPStatusCode <= 499:
-            self.isAvailable = True
+            self.message = "You are not authorized ..."
+        elif HTTPStatusCode == 404:  # not found
             self.hasError = False
+            self.message = "The content is not available for that Bucket or Endpoint..."
+        else:
+            self.message = "An internal error occured ..."
 
     def withDataToJson(self):
         self.dataJson = json.dumps(self.data, default=lambda o: o.__dict__)

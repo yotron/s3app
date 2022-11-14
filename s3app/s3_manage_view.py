@@ -26,6 +26,7 @@ class S3ManageView(BaseView):
     def get(self, bucketName):
         current_app.logger.debug("S3 Manage view called by user %s", current_user.username)
         s3Session = session[current_user.id]
+        s3Session.s3WebData.bucketData.currentName = bucketName
         s3 = S3()
         s3.setFromS3Content(s3Session)
         s3.bucketConfig.setMetadata(s3Session.s3WebData)
