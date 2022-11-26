@@ -1,7 +1,7 @@
 [![yotron](https://www.yotron.de/img/logo-yotron.png)](https://www.yotron.de)
 
 [YOTRON](https://www.yotron.de) is a consultancy company which is focused on DevOps, Cloudmanagement and
-Data Management with NOSQL and SQL-Databases. Visit us on [www.yotron.de](https://www.yotron.de).
+Data Management. Visit us on [www.yotron.de](https://www.yotron.de).
 
 # S3App
 ## Description
@@ -78,6 +78,9 @@ dependencies:
 | customize.icon  | https://www.yotron.de/img/yotron_logo.svg |         | Icon to be used in the Header. Can be any URL to an png, svg, ... . | S3APP_APP_ICON                                              |
 
 ### Log and Server Parameter
+The server settings like `hostnames`or `listenerPort` can be used independently if you want to use the Ingress Controller or the ReverseProxy as the 
+application web endpoint.
+
 | Name         | Default | Example                 | Description                                                                                   | Config Parameter [(docu)](https://github.com/yotron/s3app/) |
 |--------------|---------|-------------------------|-----------------------------------------------------------------------------------------------|-------------------------------------------------------------|
 | logLevel     | info    |                         | LogLevel for the Logging. Can be: fatal, error, warning, info, debug                          | S3APP_LOG_LEVEL                                             |
@@ -144,11 +147,17 @@ For performance tuning please read our remarks in [Github](https://github.com/yo
 You find further information about how to configure LDAP against Microsoft AD or OpenLDAP [here](https://flask-appbuilder.readthedocs.io/en/latest/security.html#authentication-ldap).
 
 ### TLS Parameter
+The TLS certificates setting is valid for the Reverse Proxy and Kubernetes Ingress Controller. S3App expects a valid Kubernetes
+TLS secret, nevertheless if it is added to the Kubernetes namespace separately or with this HELM project. To
+include certs with this project please see `certs.tls` in this configuration.
+
 | Name           | Default | Example              | Description                                                                                                                                                                                     |
 |----------------|---------|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | tls.enabled    | false   |                      | Set to `true` to activate TLS termination (https) for the communication with S3App. Teh TLS setting is used for the Reverse Proxy and the Ingress Resource when active.                         |
 | tls.secretName |         | defaultSelfSigned    | The secret name with the cert and key to use for TLS-termination.  You can define the secret externally (secret type `kubernetes.io/tls`or use the parameter `certs.tls` to create the secret.) |
-| certs.tls      |         | see values.yaml file | Create a separated TLS cert and key pair with a name to allow TLS-termination with the Reverse Proxy or the Ingress Resources. Teh name is used in `tls.secretName`                             |
+| certs.tls      |         | see values.yaml file | Create a separated TLS cert and key pair with a name to allow TLS-termination with the Reverse Proxy or the Ingress Resources. The name is used in `tls.secretName`                             |
+
+
 
 ### Reverse Proxy Parameter
 | Name                            | Default | Example | Description                                                  |

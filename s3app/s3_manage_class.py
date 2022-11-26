@@ -1,16 +1,4 @@
-import os
 from datetime import datetime
-
-from urllib.parse import urlsplit
-
-import botocore
-from botocore.config import Config
-import boto3, json, tempfile
-from types import SimpleNamespace
-
-from botocore.exceptions import ClientError
-from flask import current_app
-from flask_login import current_user
 from .s3_general_requests import *
 from .s3_general_class import DataConfig
 
@@ -76,6 +64,10 @@ class BucketConfig:
     def addSize(self, size):
         self.metrics.bucketSize = self.metrics.bucketSize + size
 
+    def resetMetrics(self):
+        self.metrics.bucketAmount = 0
+        self.metrics.bucketSize = 0
+
     def setSizeHumanReadable(self):
         self.metrics.bucketSizeHuman = statics.sizeof_fmt(self.metrics.bucketSize)
 
@@ -90,6 +82,8 @@ class BucketConfig:
                 '%a, %d %b %Y %H:%M:%S %Z')
             self.bucketOwnerId = bucket['ownerid']
             self.bucketOwnerName = bucket['owner']
+
+
 
 class S3WebData:
     accessData = DataConfig()
@@ -110,14 +104,15 @@ class S3:
 
     def setBucketMetrics(self):
         current_app.logger.debug("Begin to set metrics in current bucket.")
-        s3client = S3Request.getBoto3Client(s3AccessConfig=self.s3AccessConfigs[self.s3WebData.accessData.currentName])
+        s3client = S3Request.getBoto3Client(s3AccessConfig=self.s3AccessConfigs[self.s3WebData.accessData.currentName], currentBucketName=self.s3WebData.bucketData.currentName)
         paginator = s3client.get_paginator('list_objects_v2')
         operation_parameters = {"Bucket": self.s3WebData.bucketData.currentName, "MaxKeys": 100}
         current_app.logger.debug("Metrics pagination parameter are: %s", json.dumps(operation_parameters))
         page_iterator = paginator.paginate(**operation_parameters)
+        self.bucketConfig.resetMetrics()
         for page in page_iterator:
             self.bucketConfig.addAmount(page['KeyCount'])
-            self.bucketConfig.addSize(self.getSize(page['Contents']))
+            self.bucketConfig.addSize(self.getSize(page['Contents']) if 'Contents' in page else 0)
         self.bucketConfig.setSizeHumanReadable()
         current_app.logger.debug("New Amount %s, New Size %s",
                                  self.bucketConfig.metrics.bucketAmount,
@@ -131,8 +126,8 @@ class S3:
         return size
 
     def setBucketSetting(self):
-        s3client = S3Request.getBoto3Client(s3AccessConfig=self.s3AccessConfigs[self.s3WebData.accessData.currentName])
         bucketName = self.s3WebData.bucketData.currentName
+        s3client = S3Request.getBoto3Client(s3AccessConfig=self.s3AccessConfigs[self.s3WebData.accessData.currentName], currentBucketName=bucketName)
         self.bucketConfig.bucketWebsite = bucketWebsite(s3client, bucketName).withDataToJson()
         self.bucketConfig.bucketLifecycle = bucketLifecycle(s3client, bucketName).withDataToJson()
         self.bucketConfig.bucketNotification = bucketNotification(s3client, bucketName).withDataToJson()

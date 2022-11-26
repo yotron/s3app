@@ -1,4 +1,3 @@
-import datetime
 import json
 import os
 import tempfile
@@ -22,15 +21,15 @@ class S3Bucket:
 
 class S3AccessConfig:
     s3AccessName = ""
-    s3EndpointName = ""
     s3Endpoint = ""
-    s3DefaultEndpointUrl = ""
+    s3EndpointName = ""
+    s3EndpointTemplate = ""
+    s3ProviderName = ""
     s3DefaultRegion = ""
     s3AccessKey = ""
     s3SecretKey = ""
     s3TrustCaBundle = ""
     s3Buckets = {}
-    isAWS = False
 
     def fromJson(self, jsonStr):
         simpleNamespaceObject = json.loads(jsonStr, object_hook=lambda d: SimpleNamespace(**d))
@@ -44,7 +43,7 @@ class S3AccessConfig:
 
 
 class DataConfig:
-    data = []
+    data = None
     dataJson: str
     currentName: str
     placeholder: str
@@ -60,7 +59,9 @@ class DataConfig:
     isTruncated: bool
     pageAmount: int
     entriesAmount: int
-    currentPageNumber: int = 1
+    currentPageNumber: int
+    pageSwitch: bool
+    switchedPage: bool
     page = {}
     name: str
     maxKeys: int
@@ -70,4 +71,7 @@ class DataConfig:
         self.isAvailable = False
         self.isAllowed = False
         self.hasError = True
+        self.data = None
+        self.currentKeyResolvedList = []
+        self.commonPrefixesList = []
 

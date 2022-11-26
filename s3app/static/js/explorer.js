@@ -1,7 +1,13 @@
 $( document ).ready(function() {
-    $('#s3accesses').select2({
-        data: accessData.data
-    }).select2('val', accessData.currentName);
+    $.unblockUI();
+
+    accessSelect2Config = getSelectConfig(accessData);
+    accessSelect2Config.placeholder = accessData.message;
+    $('#s3accesses').select2(accessSelect2Config);
+    if (! accessSelect2Config.disabled) {
+        $('#s3accesses').select2('val', accessData.currentName);
+    }
+
     bucketSelect2Config = getSelectConfig(bucketData);
     bucketSelect2Config.placeholder = bucketData.message;
     $('#s3buckets').select2(bucketSelect2Config);
@@ -41,16 +47,18 @@ function getSelectConfig(dataConfig){
 function refreshTable(){
     console.log(objectData.data)
     let content = objectData.data
-    for (const [key, prefix] of Object.entries(objectData.commonPrefixesList)) {
-        let arr = {
-            'Key': prefix,
-            'Size': -1,
-            'LastModified': '',
-            'Owner': {
-                'DisplayName': ''
+    if ('commonPrefixesList' in objectData) {
+        for (const [key, prefix] of Object.entries(objectData.commonPrefixesList)) {
+            let arr = {
+                'Key': prefix,
+                'Size': -1,
+                'LastModified': '',
+                'Owner': {
+                    'DisplayName': ''
+                }
             }
+            content.unshift(arr);
         }
-        content.unshift(arr);
     }
     const tmpJson = {
         recordsTotal: objectData.entriesAmount, // expected by DataTables to create pagination
@@ -78,7 +86,7 @@ function refreshTable(){
                     .attr('type', 'submit')
                     .attr('value', String.fromCodePoint(0x1F50D))
                     .click(function() {
-                        eventSearchPrefix(input.val());
+                        clickSearchPrefix(input.val());
                     }),
                 $clearButton = null
             $('.dataTables_filter').append($searchButton, $clearButton);
@@ -133,12 +141,25 @@ function linksFormat(key, row) {
     replace = key.replace("/", "<->")
     let keyEscaped = encodeURIComponent(key.replaceAll("/", " "));
     if (row.Size < 0) {
-        return ' <a class="s3Folder" href="' + keyEscaped + '">' + paths[paths.length - 2] + '/</a>';
+        return ' <a class="s3Folder s3Entry" href="' + keyEscaped + '">' + paths[paths.length - 2] + '/</a>';
     }
-    return ' <a class="s3File" id="/s3/' + row.Key + '" href="/s3/' + keyEscaped + '" >' + paths[paths.length - 1] + '</a>';
+    return ' <a download="/s3/' + keyEscaped + '" class="s3File s3Entry" id="/s3/' + row.Key + '" href="/s3/' + keyEscaped + '" >' + paths[paths.length - 1] + '</a>';
 }
 
 function lastModifiedFormat(dateString) {
     let date = new Date(dateString)
     return date.toUTCString()
+}
+
+function blockUi() {
+    if ($('.blockOverlay').length === 0) {
+        $.blockUI({
+            message: $('#throbber'),
+            overlayCSS: {
+                backgroundColor: '#000',
+                opacity: 0.4,
+                cursor: 'wait'
+            }
+        });
+    }
 }

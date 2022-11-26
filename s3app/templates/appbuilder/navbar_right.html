@@ -50,7 +50,7 @@
                 {% endif %}
             {% endfor %}
             {% set ns = namespace(firstEntry=true) %}
-            {% for entryName in ['List S3Access', 'List S3Endpoints'] %}
+            {% for entryName in ['List S3Access', 'List S3Endpoints',  'List S3Provider'] %}
                 {% set entry = menu.find(entryName) %}
                 {% if entry | is_menu_visible %}
                     {% if ns.firstEntry == true %}

@@ -20,13 +20,12 @@ objectData={{ objectData | safe }}
 {% block content %}
 <div class="panel panel-primary ">
     <div class="panel-heading">
-        <h4 class="panel-title">S3 Dashboard</h4>
+        <h4 class="panel-title">S3 Bucket Items</h4>
     </div>
 
 <div class="selector">
   Select Access: <input id="s3accesses" class="s3access inline" />
   Select Bucket: <input id="s3buckets" class="s3bucket inline" />
-  <div class="loader"></div>  <div class="inline">
   </div>
 </div>
 <div>
@@ -34,7 +33,7 @@ objectData={{ objectData | safe }}
         <ul class="breadcrumb">
             <li><a href="/s3/">S3</a></li>
             {% set ns = namespace(prefixes="") %}
-            {% for prefixFolder in objectData.currentKeyResolvedList %}
+            {% for prefixFolder in objectDataDict.currentKeyResolvedList %}
                 {% set ns.prefixes = ns.prefixes + prefixFolder + " " %}
             <li><a href="{{ ns.prefixes | urlencode }}">{{ prefixFolder }}</a></li>
             {% endfor %}

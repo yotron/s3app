@@ -1,7 +1,7 @@
 $( "#s3accesses" ).change(function() {
     console.log(this.value);
-    $(".loader").css("display", "inline-block");
-    $.post( "/s3config/access/" + this.value, function( data ) {
+    blockUi();
+    $.post( "/s3config/access/" + this.value, function() {
         $('.dataTables_filter input').val('')
         window.location.replace("/s3");
     })
@@ -18,12 +18,11 @@ $( "#s3accesses" ).change(function() {
 
 $( "#s3buckets" ).change(function() {
     console.log(this.value);
-    $(".loader").css("display", "inline-block");
+    blockUi();
     accessnamename = $('#s3accesses').select2('data');
     bucketname = $('#s3buckets').select2('data');
     $('.dataTables_filter input').val('')
-    $.post( "/s3config/access/" + accessnamename.text + "/bucket/" + bucketname.text, function( data ) {
-        $(".loader").css("display", "None");
+    $.post( "/s3config/access/" + accessnamename.text + "/bucket/" + bucketname.text, function() {
         window.location.replace("/s3");
     })
     .done(function() {
@@ -38,9 +37,9 @@ $( "#s3buckets" ).change(function() {
 });
 
 $('#s3content').on( 'length.dt', function ( e, settings, len ) {
-    $(".loader").css("display", "inline-block");
+    blockUi();
     $('.dataTables_filter input').val('')
-    $.post( "/s3config/maxkeys/" + len, function( data ) {
+    $.post( "/s3config/maxkeys/" + len, function() {
         window.location.replace("/s3" + window.location.search);
     })
     .done(function() {
@@ -55,10 +54,10 @@ $('#s3content').on( 'length.dt', function ( e, settings, len ) {
 } );
 
 $('#s3content').on( 'page.dt', function () {
-    $(".loader").css("display", "inline-block");
+    blockUi();
     var table = $('#s3content').DataTable().page.info();
     newPage = table.page + 1
-    $.post( "/s3config/page/" + newPage, function( data ) {
+    $.post( "/s3config/page/" + newPage, function() {
        window.location.reload();
     })
     .done(function() {
@@ -72,11 +71,24 @@ $('#s3content').on( 'page.dt', function () {
     });
 } );
 
-$('#myTabs a').click(function (e) {
-    e.preventDefault()
-    $(this).tab('show')
-})
+$(window).bind('beforeunload', function(){
+    blockUi();
+});
 
-function eventSearchPrefix(searchPrefix) {
-    window.location.replace(window.location.pathname + "?searchPrefix=" + searchPrefix);
+
+function clickSearchPrefix(searchprefix) {
+    blockUi();
+    console.log(searchprefix)
+    $.post( "/s3config/searchprefix/" + searchprefix, function() {
+        window.location.reload();
+    })
+    .done(function() {
+        console.log( "to be done" );
+    })
+    .fail(function() {
+        console.log( "to be done" );
+    })
+    .always(function() {
+        console.log( "to be done" );
+    });
 }

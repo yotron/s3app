@@ -1,12 +1,12 @@
 [![yotron](https://www.yotron.de/img/logo-yotron.png)](https://www.yotron.de)
 
-[YOTRON](https://www.yotron.de) is a consultancy company which is focused on DevOps, cloud management and
-Data Management with NOSQL and SQL-Databases. Visit us on [www.yotron.de](https://www.yotron.de)
+[YOTRON](https://www.yotron.de) is a consultancy company which is focused on DevOps, Cloudmanagement and
+Data Management. Visit us on [www.yotron.de](https://www.yotron.de).
 
 # S3App
-S3 (Simple Storage Solution) is a file storage services which is part of Cloud solutions. It is known for its
-scalability, data availability, security, performance and the ease to connect storage clients to it. Introduced by Amazon in AWS, other
-provider of managed S3 are available just like software solutions to set up an private S3-solution like ([Ceph](https://ceph.io/) or [Cloudian](https://cloudian.com/)).
+S3 (Simple Storage Solution) is a object storage services to provide a web bases storages which works with simple http requests. It is known for its
+scalability, data availability, security and performance. Introduced by Amazon in AWS, other
+provider of S3 compatible object storages are available just like possibilities for self-hosted solutions.  
 
 **S3App simplifies** the access to a S3Buckets with a provider independent web based frontend which allows
 the visualizing and the management of the content of S3 buckets with an S3 provider independent web application, ....
@@ -133,7 +133,10 @@ Depend on your environment and knowledge in Python the process can be different.
 
    **Password**: admin
 
-   ![Dashboard of S3App](https://www.yotron.de/s3app/dashboard_full.png)
+   ![Dashboard of S3App](https://www.yotron.de/s3app/dashboard_item_empty.png)
+
+   Please see the [manual](https://www.yotron.de/s3app/) to allow access to buckets.
+
 
 ### HELM
 You find the installation instructions for Kubernetes [here](https://artifacthub.io/packages/helm/yotron-helm-charts/s3app)
@@ -143,7 +146,7 @@ The manual for S3App you find [here](https://www.yotron.de/s3app/)
 
 ## Configuration
 ### The dotenv file and `S3APP_CONF_FILE` variable
-You can customize S3App with a few parameters. All parameters must be set in a config file with a name like `.s3app`. The name can be chosen freely and you can put the file in a folder of your choice but 
+You can customize S3App with a setting defined in a dotenv file. The dotenv file can be chosen freely and you can put the file in a folder of your choice but 
 the file must be reachable by the S3App App. 
 
 Additionally, you need a environment variable `S3APP_CONF_FILE` with the path to your config file.
@@ -152,26 +155,11 @@ For example, for Linux you can set the environment variable with:
 ```
 export S3APP_CONF_FILE=/etc/s3app/.s3app
 ```
-### The S3APP configuration
-The config file can contain the following parameters:
+with `.s3app` as the dotenv file name.
 
-```
-S3APP_APP_NAME = "My Fancy S3 App"
-S3APP_APP_ICON = "https://myserver.com/my_own_logo.svg"
-S3APP_LOG_LEVEL = "debug"
-S3APP_LOG_FILE = ./s3app.log 
-S3APP_DB_TYPE = "postgresql"
-S3APP_PG_DB_HOST = "k8s-1"
-S3APP_PG_DB_NAME = "s3app"
-S3APP_PG_DB_PORT = 5432
-S3APP_PG_DB_USER_PW = "s3app"
-S3APP_PG_DB_USER_NAME = "s3app"
-S3APP_SECRET_KEY = "thisIsMyHiddenSecretKey"
-```
-
-### Authentication with LDAP
-To allow authentication with LDAP, a LDAP group must be mapped onto the S3App Role `S3User` or `Admin` . After the first authentication a new user, the user must be added to the `S3Access` 
-or `S3Group`. Please see the manual of S3App.
+The file contains setting to the following topics:
+- customization of your S3App
+- Authentication
 
 ### The parameter of the config file
 #### S3APP
@@ -197,7 +185,7 @@ or `S3Group`. Please see the manual of S3App.
 | S3APP_AUTH_TYPE             | database | Parameter to define the authentication method. It can be an authentication via LDAP or via the default database with name and password. | ldap, database  | database  |
 | AUTH_USER_REGISTRATION      |          | Parameter to define if a user can self registrate to S3App. With LDAP it must be set to True.                                           | True, False     | False     |
 | AUTH_USER_REGISTRATION_ROLE |          | Default role a user, when registered or authenticated via LDAP firstly.                                                                 | S3User, Admin   | S3User    |
-| AUTH_ROLES_MAPPING          |          | Mapping a LDAP group onto a S3App role `S3User` or `Admin`.                                                                             |                 |           |
+| AUTH_ROLES_MAPPING          |          | Mapping a LDAP group onto a S3App role `S3Manager`, `S3User` or `Admin`.                                                                |                 |           |
 | S3APP_SESSION_LIFETIME      | 1800     | Seconds of inactivity after which a user must re-login.                                                                                 |                 | 600       |
 
 Example of a role mapping
@@ -209,6 +197,9 @@ AUTH_ROLES_MAPPING = {
 ```
 
 #### Authentication LDAP
+To allow authentication with LDAP, a LDAP group must be mapped onto one the S3App Role `S3Manager`, `S3User` or `Admin` . After the first authentication a new user, the user must be added to the `S3Access`
+or `S3Group`. Please see the [manual of S3App](https://www.yotron.de/s3app/).
+
 | name                      | example                                         | description                                                                                               | possible values | default |
 |---------------------------|-------------------------------------------------|-----------------------------------------------------------------------------------------------------------|-----------------|---------|
 | AUTH_LDAP_SERVER          | ldap://ldap.example.com                         | The URL of the LDAP server.                                                                               |                 |         |

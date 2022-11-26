@@ -2,7 +2,7 @@ import sys
 import traceback
 
 import flask_login
-from flask import render_template, Blueprint, current_app, session, redirect, flash
+from flask import current_app, session, redirect, flash
 from flask_login import current_user
 
 

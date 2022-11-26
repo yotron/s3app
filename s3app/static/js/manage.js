@@ -82,10 +82,7 @@ function lastModifiedFormat(dateString) {
 }
 
 async function setMetrics(bucketName) {
-    $(".loader").css("display", "inline-block");
     const result = await getMetrics(bucketName);
-    console.log("2")
-    $(".loader").css("display", "None");
 }
 
 function getMetrics(bucketName) {
@@ -114,4 +111,17 @@ function fileSizeFormat(b) {
         u++;
     }
     return (u ? b.toFixed(1) + ' ' : b) + ' KMGTPEZY'[u] + 'B';
+}
+
+function blockUi() {
+    if ($('.blockOverlay').length === 0) {
+        $.blockUI({
+            message: $('#throbber'),
+            overlayCSS: {
+                backgroundColor: '#000',
+                opacity: 0.4,
+                cursor: 'wait'
+            }
+        });
+    }
 }
