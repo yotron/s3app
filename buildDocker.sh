@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION=1.2.0
+VERSION=1.2.1
 docker rmi python:alpine
 docker build . -t yotronpublic/s3app:$VERSION
 docker push yotronpublic/s3app:$VERSION
