@@ -1,0 +1,60 @@
+{% extends "appbuilder/base.html" %}
+{% block head_css %}
+{{ super() }}
+{% endblock %}
+{% block head_js %}
+{{ super() }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js"></script>
+
+<!-- load the minimalist version of JSONEditor, which doesn't have Ace embedded -->
+<link href="{{ url_for('static', filename='css/jsoneditor.css') }}" rel="stylesheet" type="text/css">
+<script src="{{ url_for('static', filename='js/jsoneditor-minimalist.js') }}"></script>
+<script src="{{ url_for('static', filename='js/manage.js') }}"></script>
+<script>
+accessData={{ accessData | safe}}
+bucketData={{ bucketData | safe}}
+</script>
+{% endblock %}
+{% block tail_js %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/eventsManage.js') }}"></script>
+{% endblock %}
+{% block content %}
+<div class="panel panel-primary ">
+    <div class="panel-heading">
+        <h4 class="panel-title">S3 Bucket Configuration</h4>
+    </div>
+
+
+<div class="selector">
+    Select Access: <input id="s3accesses" class="s3access inline" />
+    Select Bucket: <input id="s3buckets" class="s3bucket inline" />
+</div>
+<div>
+    <div>
+        <ul class="breadcrumb">
+            <li><a href="/s3manage/">S3 Bucket</a></li>
+            <li><a href="/s3manage/bucket/{{ bucketConfig.bucketName }}">{{ bucketConfig.bucketName }}</a></li>
+        </ul>
+    </div>
+</div>
+    <div>
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#overview" aria-controls="overview" role="tab" data-toggle="tab">Overview</a></li>
+            <li role="presentation"><a href="#permissions" aria-controls="permissions" role="tab" data-toggle="tab">Permissions</a></li>
+            <li role="presentation"><a href="#datasecurity" aria-controls="datasecurity" role="tab" data-toggle="tab">Data Security</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="overview">{% include "s3app/overview.html" %}</div>
+            <div role="tabpanel" class="tab-pane" id="permissions">{% include "s3app/permissions.html" %}</div>
+            <div role="tabpanel" class="tab-pane" id="datasecurity">{% include "s3app/datasecurity.html" %}</div>
+        </div>
+
+    </div>
+
+{% endblock %}
+

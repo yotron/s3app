@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "s3app"
-version = "1.1.3"
+version = "1.2.0"
 description = "S3App simplifies the access to a S3Buckets with a provider independent web based frontend which allows the visualizing and the management of the content of S3 buckets with an S3 provider independent web application."
 readme = "README.md"
 authors = [{ name = "Jörn Kleinbub", email = "joern.kleinbub@yotron.de" }]
@@ -31,10 +31,10 @@ dependencies = [
 requires-python = ">=3.9"
 
 [project.urls]
-Homepage = "https://www.yotron.de/"
-repository = "https://github.com/yotron/s3app/"
-documentation = "https://www.yotron.de/s3app/"
-
+A3App-Homepage = "https://www.yotron.de/s3app/"
+Provider-Homepage = "https://www.yotron.de/"
+Repository = "https://github.com/yotron/s3app/"
+HELM-Project = "https://artifacthub.io/packages/helm/yotron-helm-charts/s3app"
 
 [project.scripts]
 s3app-run = "s3app.__init__:run"

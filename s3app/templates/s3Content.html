@@ -8,29 +8,24 @@
 <script src="{{ url_for('static', filename='js/explorer.js') }}"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
 <script>
-setting={{ s3WebData | safe}}
-contents={{ contents | safe}}
-commonPrefixes={{ commonPrefixes | safe}}
-accessList={{ accessList | safe}}
-bucketList={{ currentBucketList | safe}}
+accessData={{ accessData | safe }}
+bucketData={{ bucketData | safe }}
+objectData={{ objectData | safe }}
 </script>
 {% endblock %}
 {% block tail_js %}
 {{ super() }}
-<script src="{{ url_for('static', filename='js/events.js') }}"></script>
+<script src="{{ url_for('static', filename='js/eventsContent.js') }}"></script>
 {% endblock %}
 {% block content %}
 <div class="panel panel-primary ">
     <div class="panel-heading">
-        <h4 class="panel-title">S3 Dashboard</h4>
+        <h4 class="panel-title">S3 Bucket Items</h4>
     </div>
 
-
 <div class="selector">
-  Select Access: <input id="s3access" class="s3access inline" />
-  Select Bucket:  <input id="s3bucket" class="s3bucket inline" />
-  <div class="inline">
-    <div class="loader"></div>
+  Select Access: <input id="s3accesses" class="s3access inline" />
+  Select Bucket: <input id="s3buckets" class="s3bucket inline" />
   </div>
 </div>
 <div>
@@ -38,14 +33,14 @@ bucketList={{ currentBucketList | safe}}
         <ul class="breadcrumb">
             <li><a href="/s3/">S3</a></li>
             {% set ns = namespace(prefixes="") %}
-            {% for prefixFolder in currentPrefixesList %}
+            {% for prefixFolder in objectDataDict.currentKeyResolvedList %}
                 {% set ns.prefixes = ns.prefixes + prefixFolder + " " %}
             <li><a href="{{ ns.prefixes | urlencode }}">{{ prefixFolder }}</a></li>
             {% endfor %}
         </ul>
     </div>
     <div class="table-responsive">
-        <table id="example" class="display" style="width:100%">
+        <table id="s3content" class="display" style="width:100%">
             <thead>
             <tr>
                 <th>Name</th>

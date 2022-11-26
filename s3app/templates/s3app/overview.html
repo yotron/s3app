@@ -1,0 +1,113 @@
+{% import 's3app/lib.html' as lib %}
+
+{# Bucket Overview #}
+{% set content = [
+  [
+     lib.get_content_text('bucket_name', 'name', bucketConfig.bucketName),lib.get_content_text('bucket_owner_name', 'owner name', bucketConfig.bucketOwnerName )
+  ],
+  [
+     lib.get_content_text('bucket_creation_date', 'creation date', bucketConfig.bucketCreationDate),lib.get_content_text('bucket_owner_id', 'owner id', bucketConfig.bucketOwnerId )
+   ],
+]
+%}
+{% with title="Bucket", config={"isAvailable": true, "hasError": false, "isAllowed": true}, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+{# Metrics #}
+{% set content = [
+[
+lib.get_content_text('metrics_amount', 'Amount Keys (latest version)', 'Please wait'),lib.get_content_text('metrics_size', 'Size Keys (latest version)', 'Please wait' )
+],
+]
+%}
+{% with title="Metrics", config={"isAvailable": true, "hasError": false, "isAllowed": true}, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+
+{# bucketWebsite #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_website", bucketConfig.bucketWebsite)
+],
+]
+%}
+{% with title="BucketWebsite", config=bucketConfig.bucketWebsite, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+{# bucketLifecycle #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_lifecycle", bucketConfig.bucketLifecycle)
+],
+]
+%}
+{% with title="BucketLifecycle", config=bucketConfig.bucketLifecycle, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+{# bucketNotification #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_notifications", bucketConfig.bucketNotification)
+],
+]
+%}
+{% with title="BucketNotification", config=bucketConfig.bucketNotification, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+{# bucketRequestPayment #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_request_payment", bucketConfig.bucketRequestPayment)
+],
+]
+%}
+{% with title="BucketRequestPayment", config=bucketConfig.bucketRequestPayment, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+{# bucketTagSet #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_tagset", bucketConfig.bucketTagSet)
+],
+]
+%}
+{% with title="BucketTegging", config=bucketConfig.bucketTagSet, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+{# bucketLogging #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_logging", bucketConfig.bucketLogging)
+],
+]
+%}
+{% with title="BucketLogging", config=bucketConfig.bucketLogging, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+{# bucketMetricsConfig #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_metric_conf", bucketConfig.bucketMetricsConfig)
+],
+]
+%}
+{% with title="BucketMertrics", config=bucketConfig.bucketMetricsConfig, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+{# bucketInventoryConfiguration #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_inventory_conf", bucketConfig.bucketInventoryConfiguration)
+],
+]
+%}
+{% with title="BucketInvConfig", config=bucketConfig.bucketInventoryConfiguration, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+{# bucketIntelligentTieringConfig #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_int_tiering_conf", bucketConfig.bucketIntelligentTieringConfig)
+],
+]
+%}
+{% with title="BucketIntTiering", config=bucketConfig.bucketIntelligentTieringConfig, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}
+
+{# bucket bucketAnalyticsConfig #}
+{% set content = [
+[
+lib.get_jsoneditor("bucket_analytics_conf", bucketConfig.bucketAnalyticsConfig)
+],
+]
+%}
+{% with title="BucketAnalytics", config=bucketConfig.bucketAnalyticsConfig, content=content %}{% include "s3app/templates/panel.html" %}{% endwith %}

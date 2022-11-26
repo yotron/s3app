@@ -12,3 +12,7 @@
 /helm/charts/
 /helm/Chart.lock
 values.yaml_*
+/test/
+/s3app/node_modules/
+/s3app/package.json
+/s3app/package-lock.json

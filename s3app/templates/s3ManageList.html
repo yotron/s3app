@@ -1,0 +1,55 @@
+{% extends "appbuilder/base.html" %}
+{% block head_css %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.css"/>
+{% endblock %}
+{% block head_js %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/manage.js') }}"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/datatables.min.js"></script>
+<script>
+accessData={{ accessData | safe}}
+bucketData={{ bucketData | safe}}
+</script>
+{% endblock %}
+{% block tail_js %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/eventsManage.js') }}"></script>
+{% endblock %}
+{% block content %}
+<div class="panel panel-primary ">
+    <div class="panel-heading">
+        <h4 class="panel-title">S3 Buckets</h4>
+    </div>
+
+<div class="selector">
+  Select Access: <input id="s3accesses" class="s3access inline" />
+</div>
+<div>
+    <div>
+        <ul class="breadcrumb">
+            <li><a href="/s3manage/">S3 Buckets</a></li>
+        </ul>
+    </div>
+    <div class="table-responsive">
+        <table id="s3accessmanagebuckets" class="display" style="width:100%">
+            <thead>
+            <tr>
+                <th>BucketName</th>
+                <th>Region</th>
+                <th>CreationDate</th>
+                <th>Owner</th>
+            </tr>
+            </thead>
+            <tfoot>
+            <tr>
+                <th>BucketName</th>
+                <th>Region</th>
+                <th>CreationDate</th>
+                <th>Owner</th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+{% endblock %}

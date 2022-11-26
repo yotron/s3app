@@ -1,14 +1,10 @@
-import argparse
 import os, logging
-import sys
 from datetime import timedelta
-from os.path import join, dirname
-from pathlib import Path
+
+from sqlalchemy.exc import NoResultFound
 from waitress import serve
-import yaml
 from dotenv import dotenv_values
-import flask_login
-from flask import Flask, flash
+from flask import Flask
 from flask_appbuilder import SQLA, AppBuilder
 from flask_session import Session
 from flask_appbuilder.menu import Menu
@@ -18,21 +14,21 @@ from sqlalchemy import MetaData, create_engine
 
 from s3app.s3_server import S3ServerAroParser
 from s3app.s3_sec import S3SecurityManager
-from s3app.s3_base import base
-from s3app.s3_error import logout_user, handle_500
-from s3app.s3_sec_models import Sqls
-from s3app.s3_sec_views import S3AccessModelView, S3GroupModelView, S3EndpointModelView
+from s3app.s3_general_rest import base
+from s3app.s3_general_error import *
+from s3app.s3_sec_views import S3AccessModelView, S3GroupModelView, S3EndpointModelView, S3ProviderModelView
+from s3app.s3_sec_models import S3AppVersion
 from s3app.s3_content_view import S3View, S3IndexView
+from s3app.s3_manage_view import S3ManageView
 from s3app.s3_sec_signals import userloggedin, userloggedout
-from s3app.s3_content_rest import Access, Bucket, Page, MaxKeys
+from s3app.s3_content_rest import Access, Bucket, Page, MaxKeys, SearchPrefix
+from s3app.s3_manage_rest import Metrics
+from s3app.sqls.sql import Sqls
 from flask_restful import Api
 
 from flask_appbuilder.security.manager import (
-    AUTH_OID,
-    AUTH_REMOTE_USER,
     AUTH_DB,
     AUTH_LDAP,
-    AUTH_OAUTH,
 )
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -88,11 +84,12 @@ app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=10)
 if "S3APP_SESSION_LIFETIME" in app.config:
     app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(seconds=int(app.config["S3APP_SESSION_LIFETIME"]))
 
-# Init Database
+# Init Database for Server Sessions
 server_session = Session(app)
 server_session.app.session_interface.db.create_all()
-db = SQLA(app)
 
+db = SQLA(app)
+db.create_all()
 # Register Flask Blueprints
 app.register_blueprint(base)
 
@@ -106,8 +103,10 @@ appbuilder = AppBuilder(app, db.session, base_template='appbuilder/baselayout.ht
 appbuilder.add_view(S3AccessModelView, "List S3Access", category="Security")
 appbuilder.add_view(S3GroupModelView, "List Groups", category="Security")
 appbuilder.add_view(S3EndpointModelView, "List S3Endpoints", category="Security")
+appbuilder.add_view(S3ProviderModelView, "List S3Provider", category="Security")
+appbuilder.add_view(S3ManageView, "S3Buckets", category="S3")
+appbuilder.add_view(S3IndexView, "S3Items", category="S3")
 appbuilder.add_view_no_menu(S3View())
-appbuilder.add_view_no_menu(S3IndexView())
 
 # init Flask RESTApi
 api = Api(app)
@@ -115,6 +114,8 @@ api.add_resource(Access, '/s3config/access/<string:accessname>')
 api.add_resource(Bucket, '/s3config/access/<string:accessname2>/bucket/<string:bucketname>')
 api.add_resource(MaxKeys, '/s3config/maxkeys/<string:maxkeys>')
 api.add_resource(Page, '/s3config/page/<string:page>')
+api.add_resource(SearchPrefix, '/s3config/searchprefix/<string:searchprefix>')
+api.add_resource(Metrics, '/s3manage/metrics/<string:bucketname>')
 
 admin = appbuilder.sm.find_user(username="admin")
 
@@ -138,18 +139,11 @@ if admin == None:
 flask_login.user_logged_in.connect(userloggedin)
 flask_login.user_logged_out.connect(userloggedout)
 
-# Init access views
+# Init and Migrate
 
-sqls = Sqls(db)
-
-sqls.setDefaultEndpoints()
-if os.environ.get('WITH_TESTDATA') == "true":
-    sqls.setTestData(appbuilder)
-
-meta = MetaData(create_engine(app.config['SQLALCHEMY_DATABASE_URI']))
-meta.reflect(views=True)
-if not 's3_user_access' in meta.tables:
-    sqls.setUserAccessView()
+sqls = Sqls(app)
+sqls.update_1_0_0()
+sqls.update_1_2_0()
 
 
 def run():

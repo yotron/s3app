@@ -1,0 +1,21 @@
+<div class="panel panel-default">
+    <div class="panel-heading">{{ title }}</div>
+    <div class="panel-body">
+        <div class="container-fluid manage_content">
+            {% if config.hasError or not config.isAllowed or not config.isAvailable %}
+            <div class="row">
+                <div class="col-12">{{ config.message }}</div>
+            </div>
+            {% else %}
+                {% for rows in content %}
+                <div class="row">
+                    {% set grid = (12 / (rows|length))|int %}
+                    {% for value in rows %}
+                    <div class="col-md-{{ grid }}">{{ value }}</div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
