@@ -9,7 +9,7 @@ from .s3_manage_class import S3
 class S3ManageView(BaseView):
     route_base = '/s3manage'
 
-    @expose('/')
+    @expose('')
     @has_access
     def list(self):
         current_app.logger.debug("S3 Manage view called by user %s", current_user.username)

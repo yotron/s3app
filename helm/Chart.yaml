@@ -1,10 +1,10 @@
 apiVersion: v2
-version: 1.1.1
-appVersion: 1.2.1
+version: 1.2.5
+appVersion: 1.2.6
 name: s3app
 description: |
   S3App simplifies the access to a S3Buckets with a provider independent web based frontend which allows
-  the visualizing and the management of the content of S3 buckets.
+  the visualizing and the management of the co                                                                                                       ntent of S3 buckets.
 home: https://www.yotron.de
 icon: https://www.yotron.de/img/logo-yotron.png
 sources:

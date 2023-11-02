@@ -25,7 +25,7 @@ app:
     threadsPerReplica: 4
     image: yotronpublic/s3app
     imagePullPolicy: IfNotPresent
-    tag: 1.2.1
+    tag: latest
   database:
     type: sqlite # postgres
     pgInternal: false
@@ -66,7 +66,7 @@ tls:
 nginxproxy:
   enabled: true
   image: nginx
-  tag: 1.23.2-alpine
+  tag: alpine
   clientMaxBodySize: 10m
   clientConnectTimeout: 90
   proxySendTimeout: 90

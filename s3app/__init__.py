@@ -1,7 +1,6 @@
 import os, logging
 from datetime import timedelta
 
-from sqlalchemy.exc import NoResultFound
 from waitress import serve
 from dotenv import dotenv_values
 from flask import Flask
