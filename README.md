@@ -18,7 +18,7 @@ The project contains code, build packages, container ... . Below an overview:
 
 | Type                  | Provider                        | URL                                                           |
 |-----------------------|---------------------------------|---------------------------------------------------------------|
-| S3App Manual          | yotron.de                       | https://www.yotron.de/s3app/                                  |
+| S3App Manual          | yotron.de                       | https://www.yotron.de/en/s3app/                               |
 | Container             | hub.docker.com                  | https://hub.docker.com/r/yotronpublic/s3app                   | 
 | Python Package (PyPi) | pypi.org                        | https://pypi.org/project/s3app/                               |  
 | HELM package          | artifacthub.io / helm.yotron.de | https://artifacthub.io/packages/helm/yotron-helm-charts/s3app |
